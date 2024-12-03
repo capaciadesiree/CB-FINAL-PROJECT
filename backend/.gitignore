@@ -1,0 +1,13 @@
+# dependencies
+/node_modules
+
+# environment
+.env
+
+# logs
+*.log
+logs/
+
+# IDE's
+.vscode/
+Thumbs.db
