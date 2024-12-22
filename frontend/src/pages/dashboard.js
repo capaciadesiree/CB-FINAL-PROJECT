@@ -27,7 +27,7 @@ const DashboardContainer = styled.div`
   background-color: ${({ theme }) => theme.componentBackground};
 `;
   
-  const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.div`
   grid-column: 2/4;
   grid-row: 1/2;
   padding: 20px;

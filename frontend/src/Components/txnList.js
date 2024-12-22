@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import EditButton from './editButton';
-import DeleteButton from './deleteButton';
+import EditIcon from './editButton';
+import DeleteIcon from './deleteButton';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
+// txnList styles
 const TxnContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 20px;
-`;
-
-const TransactionColumn = styled.div`
-  flex: 1;
-  background-color: ${({ theme }) => theme.componentBackground};
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  flex-direction: row;
+  gap: 10px;
+  overflow-y: auto; // Add vertical scroll if content overflows
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  background-color: ${({ theme }) => theme.componentBackground};
 `;
 
 const TransactionItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
   border-bottom: 1px solid ${({ theme }) => theme.borderColor};
 
   &:last-child {
@@ -33,119 +31,234 @@ const TransactionItem = styled.div`
 `;
 
 const TransactionDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   color: ${({ theme }) => theme.textColor};
+`;
+
+const TransactionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+`;
+
+const TransactionContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Add enough space between elements */
 `;
 
 const TransactionActions = styled.div`
   display: flex;
+  align-items: center;
+`;
+
+const IconButton = styled.button`
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: ${({ theme }) => theme.textColor};
+  cursor: pointer;
   gap: 10px;
+
+  &:hover {
+    color: ${({ hoverColor }) => hoverColor};
+    }
+`;
+  
+const StatusCircle = styled.span`
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: ${({ isNew }) => (isNew ? 'green' : 'grey')};
+`;
+
+// modal styles
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background-color: ${({ theme }) => theme.componentBackground};
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid ${({ theme }) => theme.borderColor};
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.inputBackground};
+  color: ${({ theme }) => theme.textColor};
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: #2980b9;
+  }
 `;
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([
     // Dummy data for Income and Expense
-    { id: 1, description: 'Salary', amount: 850.0, type: 'Income', date: '2024-09-15', category: 'Designing' },
-    { id: 2, description: 'Business', amount: 850.0, type: 'Income', date: '2024-09-15', category: 'Designing' },
-    { id: 3, description: 'Rent', amount: 850.0, type: 'Expense', date: '2024-09-15', category: 'Designing' },
-    { id: 4, description: 'Food', amount: 850.0, type: 'Expense', date: '2024-09-15', category: 'Designing' },
+    { id: 1, description: 'Freelance', amount: 850.0, type: 'Salary', date: '2024-09-15' },
+    { id: 2, description: 'Business', amount: 850.0, type: 'Income', date: '2024-09-15' },
+    { id: 3, description: 'Rent', amount: 850.0, type: 'Expense', date: '2024-09-15' },
+    { id: 4, description: 'Food', amount: 850.0, type: 'Expense', date: '2024-09-15' },
   ]);
-
+  // form modal for editing existing transactions
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); 
+  const [currentTransaction, setCurrentTransaction] = useState(null);
+  
+/*
   // Uncomment this block later to fetch from backend
-  /*
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const [incomeRes, expenseRes] = await Promise.all([
-          fetch('/api/incomes'),
-          fetch('/api/expenses'),
-        ]);
-
-        const incomeData = await incomeRes.json();
-        const expenseData = await expenseRes.json();
-
-        setTransactions([...incomeData, ...expenseData]); // Combine both lists
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
-      }
-    };
-
-    fetchTransactions();
+    //  fetch transactions from backend
+    fetch('/api/transactions') //replace with actual path
+      .then(response => response.json())
+      .then(data => setTransactions(data))
+      .catch(error => console.error('Error fetching transactions:', error));
   }, []);
-  */
 
-  // handles data input editing
-  const handleEdit = (id) => {
-    const transactionToEdit = transactions.find((t) => t.id === id);
-    const newDescription = prompt(`Edit transaction (
-        Type: ${transactionToEdit.type}, 
-        Amount: ${transactionToEdit.amount}, 
-        Date: ${transactionToEdit.date}, 
-        Description: ${transactionToEdit.description}
-      )`,
-      transactionToEdit.description
-    );
+  const addTransaction = (newTransaction) => {
+    fetch('api/transactions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newTransaction),
+    })
+    .then(response => response.json()) 
+    .then(addedTransaction => setTransactions([...transactions, addedTransaction])) 
+    .catch(error => console.error('Error adding transaction:', error));
+  };
+*/
 
-    if (newDescription !== null) {
-      const updatedTransactions = transactions.map((transaction) =>
-        transaction.id === id ? { ...transaction, description: newDescription } : transaction
-      );
-      setTransactions(updatedTransactions);
-    }
+  // data input editing function
+  const editTransaction = (id) => {
+    const transactionToEdit = transactions.find(transaction => transaction.id === id);
+    setCurrentTransaction(transactionToEdit); 
+    setIsEditModalOpen(true);
     // console.log(`Edit transaction with id: ${id}`);
   };
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this transaction?');
-    if (confirmDelete) {
-      setTransactions(transactions.filter((transaction) => transaction.id !== id));
+  // save edited transation
+  const saveEditTransaction = (updatedTransaction) => {
+    // sends back edited transaction to backend via PUT req and updates the state
+    fetch(`/api/transactions/${currentTransaction.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedTransaction),
+    })
+      .then(response => response.json())
+      .then(savedTransaction => {
+        setTransactions(transactions.map(transaction => transaction.id === savedTransaction.id ? savedTransaction : transaction));
+        setIsEditModalOpen(false);
+      })
+      .catch(error => console.error('Error updating transaction:', error));
+  };
+
+  // delete function (prompt)
+  const deleteTransaction = (id) => {
+    if (window.confirm('Are you sure you want to delete this transaction?')) { 
+      fetch(`/api/transactions/${id}`, { 
+        method: 'DELETE', 
+      }) 
+        .then(() => { 
+          setTransactions(transactions.filter(transaction => transaction.id !== id));
+        }) 
+        .catch(error => console.error('Error deleting transaction:', error)); 
     }
   };
 
-  // Split transactions into Income and Expense
-  const incomeTransactions = transactions.filter((t) => t.type === 'Income');
-  const expenseTransactions = transactions.filter((t) => t.type === 'Expense');
-
   return (
     <TxnContainer>
-      {/* Income Transactions */}
-      <TransactionColumn>
-        {incomeTransactions.map((transaction) => (
-          <TransactionItem key={transaction.id}>
-            <TransactionDetails>
-              <p>{transaction.type}</p>
-              <p>
-                ${transaction.amount} &nbsp; 
-                <CalendarMonthIcon /> {transaction.date} &nbsp; 
-                <ChatBubbleOutlineIcon /> {transaction.description}
-              </p>
-            </TransactionDetails>
-            <TransactionActions>
-              <EditButton onClick={() => handleEdit(transaction.id)} />
-              <DeleteButton onClick={() => handleDelete(transaction.id)} />
-            </TransactionActions>
-          </TransactionItem>
-        ))}
-      </TransactionColumn>
+      {/* structure for transaction list */}
+      {transactions.map((transaction) => (
+        <TransactionItem key={transaction.id}>
 
-      {/* Expense Transactions */}
-      <TransactionColumn>
-        {expenseTransactions.map((transaction) => (
-          <TransactionItem key={transaction.id}>
-            <TransactionDetails>
+          <TransactionDetails>
+            <TransactionHeader>
+              <StatusCircle isNew={Date.parse(transaction.date) > Date.now()} />
               <p>{transaction.type}</p>
-              <p>
-                ${transaction.amount} &nbsp; 
-                <CalendarMonthIcon /> {transaction.date} &nbsp; 
-                <ChatBubbleOutlineIcon /> {transaction.description}
-              </p>
-            </TransactionDetails>
-            <TransactionActions>
-              <EditButton onClick={() => handleEdit(transaction.id)} />
-              <DeleteButton onClick={() => handleDelete(transaction.id)} />
-            </TransactionActions>
-          </TransactionItem>
-        ))}
-      </TransactionColumn>
+            </TransactionHeader>
+
+            <TransactionContent>
+              <p>${transaction.amount}</p>
+              <p><CalendarMonthIcon /> {transaction.date}</p>
+              <p><ChatBubbleOutlineIcon /> {transaction.description}</p>
+            </TransactionContent>
+          </TransactionDetails>
+
+          <TransactionActions>
+            <IconButton onClick={() => editTransaction(transaction.id)} hoverColor="#3498db">
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={() => deleteTransaction(transaction.id)} hoverColor="#e74c3c">
+              <DeleteIcon />
+            </IconButton>
+          </TransactionActions>
+
+        </TransactionItem>
+      ))}
+
+      {/* modal structure */}
+      {isEditModalOpen && (
+        <ModalOverlay>
+          <ModalContent>
+            <h3>Edit Transaction</h3>
+            <Input
+              type="text"
+              placeholder="Type"
+              value={currentTransaction.type}
+              onChange={(e) => setCurrentTransaction({ ...currentTransaction, type: e.target.value })}
+            />
+            <Input
+              type="text"
+              placeholder="Description"
+              value={currentTransaction.description}
+              onChange={(e) => setCurrentTransaction({ ...currentTransaction, description: e.target.value })}
+            />
+            <Input
+              type="date"
+              value={currentTransaction.date}
+              onChange={(e) => setCurrentTransaction({ ...currentTransaction, date: e.target.value })}
+            />
+            <Input
+              type="number"
+              placeholder="Amount"
+              value={currentTransaction.amount}
+              onChange={(e) => setCurrentTransaction({ ...currentTransaction, amount: e.target.value })}
+            />
+            <Button onClick={() => saveEditTransaction(currentTransaction)}>Save</Button>
+            <Button onClick={() => setIsEditModalOpen(false)} style={{ backgroundColor: '#e74c3c', marginLeft: '10px' }}>Cancel</Button>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </TxnContainer>
   );
 };

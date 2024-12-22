@@ -27,7 +27,7 @@ const SidebarWrapper = styled.div`
 `;
 
 const HeaderWrapper = styled.div`
-  grid-column: 2/4;
+  grid-column: 2/6;
   grid-row: 1/2;
   padding: 20px;
   display: flex;
@@ -39,8 +39,8 @@ const HeaderWrapper = styled.div`
 `;
 
 const TxnFormWrapper = styled.div`
-  grid-column: 2/4;
-  grid-row: 2/2;
+  grid-column: 2/6;
+  grid-row: 2/3;
   padding: 20px;
   display: flex;
   gap: 10px;
@@ -49,8 +49,8 @@ const TxnFormWrapper = styled.div`
 `;
 
 const TxnListWrapper = styled.div`
-  grid-column: 2/4;
-  grid-row: 3/3;
+  grid-column: 2/6;
+  grid-row: 3/4;
   padding: 20px;
   display: flex;
   gap: 10px;
@@ -60,8 +60,8 @@ const TxnListWrapper = styled.div`
 `;
 
 const SummaryWrapper = styled.div`
-  grid-column: 2/3;
-  grid-row: 4/4;
+  grid-column: 2/6;
+  grid-row: 4/5;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

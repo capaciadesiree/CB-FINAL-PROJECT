@@ -18,22 +18,24 @@ const TxnHistoryContainer = styled.div`
 `;
 
 const SidebarWrapper = styled.div`
-grid-column: 1/2;
-grid-row: 1/4;
-padding: 20px;
-border-radius: 10px;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  grid-column: 1/2;
+  grid-row: 1/4;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: ${({ theme }) => theme.componentBackground};
 `;
 
 const HeaderWrapper = styled.div`
-grid-column: 2/4;
-grid-row: 1/2;
-padding: 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-radius: 10px;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  grid-column: 2/4;
+  grid-row: 1/2;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: ${({ theme }) => theme.componentBackground};
 `;
 
 const ChartWrapper = styled.div`
