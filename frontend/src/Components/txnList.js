@@ -9,11 +9,13 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 const TxnContainer = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  max-width: 600px;
+  max-height: 300px;
   padding: 20px;
-  flex-direction: row;
-  gap: 10px;
-  overflow-y: auto; // Add vertical scroll if content overflows
+  flex-direction: column;
+  gap: 15px;
+  overflow-x: auto; // Add vertical scroll if content overflows (but, check other ways for border-radius to still apply on this side)
+  position: relative;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
@@ -38,6 +40,7 @@ const TransactionDetails = styled.div`
 `;
 
 const TransactionHeader = styled.div`
+  height: 30px;
   display: flex;
   align-items: center;
   margin-bottom: 5px;
@@ -46,7 +49,7 @@ const TransactionHeader = styled.div`
 const TransactionContent = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px; /* Add enough space between elements */
+  gap: 10px;
 `;
 
 const TransactionActions = styled.div`
@@ -120,13 +123,13 @@ const Button = styled.button`
   }
 `;
 
-const TransactionList = () => {
+const TransactionList = ({ category }) => {
   const [transactions, setTransactions] = useState([
     // Dummy data for Income and Expense
-    { id: 1, description: 'Freelance', amount: 850.0, type: 'Salary', date: '2024-09-15' },
-    { id: 2, description: 'Business', amount: 850.0, type: 'Income', date: '2024-09-15' },
-    { id: 3, description: 'Rent', amount: 850.0, type: 'Expense', date: '2024-09-15' },
-    { id: 4, description: 'Food', amount: 850.0, type: 'Expense', date: '2024-09-15' },
+    { id: 1, description: 'Full-time', amount: 850.0, type: 'Salary', date: '2024-09-15', category: 'Income' },
+    { id: 2, description: 'Project based', amount: 850.0, type: 'Freelance', date: '2024-09-15', category: 'Income' },
+    { id: 3, description: 'House rent', amount: 850.0, type: 'Rent', date: '2024-09-15', category: 'Expense' },
+    { id: 4, description: 'Grocery', amount: 850.0, type: 'Food', date: '2024-09-15', category: 'Expense' },
   ]);
   // form modal for editing existing transactions
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); 
@@ -135,14 +138,15 @@ const TransactionList = () => {
 /*
   // Uncomment this block later to fetch from backend
   useEffect(() => {
-    //  fetch transactions from backend
-    fetch('/api/transactions') //replace with actual path
+    //  fetch transactions from backend based on category (income or expense)
+    fetch(`/api/transactions?category=${category}`) //replace "/api/transactions" with actual path
       .then(response => response.json())
       .then(data => setTransactions(data))
       .catch(error => console.error('Error fetching transactions:', error));
-  }, []);
+  }, [category]); // dependency array includes 'category'
 
   const addTransaction = (newTransaction) => {
+    newTransaction.category = category; // set transaction list's category
     fetch('api/transactions', {
       method: 'POST',
       headers: {
@@ -209,8 +213,18 @@ const TransactionList = () => {
 
             <TransactionContent>
               <p>${transaction.amount}</p>
-              <p><CalendarMonthIcon /> {transaction.date}</p>
-              <p><ChatBubbleOutlineIcon /> {transaction.description}</p>
+              <p style={{ display: 'flex', alignItems: 'center' }}>
+                <CalendarMonthIcon style={{ marginRight: '5px' }} /> 
+                {new Date(transaction.date).toLocaleDateString('en-US', { 
+                  month: '2-digit',
+                  day: '2-digit',
+                  year: 'numeric'
+                })}
+              </p>
+              <p style={{ display: 'flex', alignItems: 'center' }}>
+                <ChatBubbleOutlineIcon style={{ marginRight: '5px' }} /> 
+                {transaction.description}
+              </p>
             </TransactionContent>
           </TransactionDetails>
 
@@ -232,23 +246,27 @@ const TransactionList = () => {
           <ModalContent>
             <h3>Edit Transaction</h3>
             <Input
+              category={category}
               type="text"
               placeholder="Type"
               value={currentTransaction.type}
               onChange={(e) => setCurrentTransaction({ ...currentTransaction, type: e.target.value })}
             />
             <Input
+              category={category}
               type="text"
               placeholder="Description"
               value={currentTransaction.description}
               onChange={(e) => setCurrentTransaction({ ...currentTransaction, description: e.target.value })}
             />
             <Input
+              category={category}
               type="date"
               value={currentTransaction.date}
               onChange={(e) => setCurrentTransaction({ ...currentTransaction, date: e.target.value })}
             />
             <Input
+              category={category}
               type="number"
               placeholder="Amount"
               value={currentTransaction.amount}

@@ -54,7 +54,6 @@ const TxnListWrapper = styled.div`
   padding: 20px;
   display: flex;
   gap: 10px;
-  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 `;
@@ -85,7 +84,8 @@ const AddTransaction = () => {
       </TxnFormWrapper>
 
       <TxnListWrapper>
-        <TxnList />
+        <TxnList category="Income" />
+        <TxnList category="Expense" />
       </TxnListWrapper>
 
       <SummaryWrapper>
