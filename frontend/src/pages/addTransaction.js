@@ -9,7 +9,7 @@ import SummaryComponent from '../Components/summaryBox';
 const AddTxnContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 3fr;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr 1fr;
   height: 100vh;
   gap: 10px;
   padding: 10px;
@@ -41,18 +41,17 @@ const HeaderWrapper = styled.div`
 const TxnFormWrapper = styled.div`
   grid-column: 2/6;
   grid-row: 2/3;
-  padding: 20px;
   display: flex;
   gap: 10px;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const TxnListWrapper = styled.div`
   grid-column: 2/6;
   grid-row: 3/4;
-  padding: 20px;
   display: flex;
+  height: 130px;
   gap: 10px;
   justify-content: space-between;
   align-items: center;
@@ -89,7 +88,7 @@ const AddTransaction = () => {
       </TxnListWrapper>
 
       <SummaryWrapper>
-        <SummaryComponent layout='vertical' visibleBoxes={['income', 'expenses', 'savings']} />
+        <SummaryComponent layout='horizontal' visibleBoxes={['income', 'expenses', 'savings']} />
       </SummaryWrapper>
 
     </AddTxnContainer>

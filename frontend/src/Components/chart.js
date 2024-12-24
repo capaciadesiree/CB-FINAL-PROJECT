@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, Tooltip, CategoryScale } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, CategoryScale);
 
@@ -69,76 +69,77 @@ const ChartContainer = styled.div`
   margin: 0 auto;
 `;
 
-const LineChart = ({ theme }) => {
+const LineChart = () => {
   // state variables
+  const theme = useTheme(); // access theme from styled-components
   const [dataType, setDataType] = useState('Income'); // stores current data type (income, expenses, savings)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // manages dropdown state (open/close)
   const [timeRange, setTimeRange] = useState('6 Months'); // stores current time range (by month)
 
   // chart data & style
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [
-      {
-        label: dataType,
-        data: dataType === 'Income' ? [3000, 4000, 3200, 4500, 4800, 5300] :
-              dataType === 'Expenses' ? [2500, 3000, 2800, 3500, 3700, 3900] :
-              [500, 1000, 400, 1000, 1100, 1400],
-        fill: false,
-        backgroundColor: '#3498db',
-        borderColor: '#3498db',
-        pointBorderColor: '#3498db',
-        pointBackgroundColor: '#3498db',
-        tension: 0.3,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: true,
-        backgroundColor: '#3498db',
-        titleColor: '#fff',
-        borderColor: '#ccc',
-        borderWidth: 1,
-        bodyColor: "#ddd",
-      },
-    },
-    scales: {
-      x: {
-        grid: {
+    const data = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+      datasets: [
+        {
+          label: dataType,
+          data: dataType === 'Income' ? [3000, 4000, 3200, 4500, 4800, 5300] :
+                dataType === 'Expenses' ? [2500, 3000, 2800, 3500, 3700, 3900] :
+                [500, 1000, 400, 1000, 1100, 1400],
+          fill: false,
+          backgroundColor: theme.containerBackground,
+          borderColor: theme.borderColor,
+          pointBorderColor: theme.textColor,
+          pointBackgroundColor: theme.textColor,
+          tension: 0.3,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+        },
+      ],
+    };
+  
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
           display: false,
         },
-        // x-axis label
-        ticks: {
-          color: '#E1E0E6',
-          stepSize: 400
+        tooltip: {
+          enabled: true,
+          backgroundColor: theme.textColor,
+          titleColor: '#fff',
+          borderColor: '#ccc',
+          borderWidth: 1,
+          bodyColor: "#ddd",
         },
       },
-      y : {
-        beginAtZero: true,
-        grid: {
-          color: '#E1E0E6',
+      scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+          // x-axis label
+          ticks: {
+            color: theme.textColor,
+            stepSize: 400
+          },
         },
-        // y-axis label
-        ticks: {
-          color: '#E1E0E6',
-          font: {
-            size: 14,
+        y : {
+          beginAtZero: true,
+          grid: {
+            color: theme.textColor,
+          },
+          // y-axis label
+          ticks: {
+            color: theme.textColor,
+            font: {
+              size: 14,
+            },
           },
         },
       },
-    },
-  };
-
+    };
+  
   // handles the change in data type from title dropdown
   const handleDataTypeChange = (value) => {
     setDataType(value);

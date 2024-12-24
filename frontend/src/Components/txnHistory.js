@@ -8,23 +8,25 @@ const TxnHistoryContainer = styled.div`
 `;
 
 const FilterOptions = styled.div`
+  margin-top: 10px;
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  align-items: center;
 `;
 
-const FilterButton = styled.button`
-  background-color: ${({ active }) => (active ? '#3498db' : '#bdc3c7')};
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  margin-left: 10px;
-  cursor: pointer;
+const FilterLabel = styled.label`
+  font-size: 14px;
+  color: ${({ theme }) => theme.textColor};
+  margin-right: 10px;
+`;
 
-  &:hover {
-    background-color: ${({ active }) => (active ? '#2980b9' : '#95a5a6')};
-  }
+const FilterSelect = styled.select`
+  background-color: ${({ theme }) => theme.componentBackground};
+  color: ${({ theme }) => theme.textColor};
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 const Table = styled.table`
@@ -33,6 +35,9 @@ const Table = styled.table`
 `;
 
 const TableHeader = styled.th`
+  // display: flex;
+  // align-content: flex-start;
+  text-align: left;
   padding: 10px;
   color: ${({ theme }) => theme.subTextColor};
 `;
@@ -43,7 +48,7 @@ const TableCell = styled.td`
 `;
 
 const TxnHistory = ({ theme }) => {
-  const [filter, setFilter] = useState('Recent');
+  const [filter, timeFilter, setTimeFilter] = useState('Recent'); // stores current time range (by recent or oldest)
 
   const transactions = [
     { description: 'Salary', type: 'Designing', date: '09/15/2024', amount: '$850.00' },
@@ -57,22 +62,27 @@ const TxnHistory = ({ theme }) => {
       : new Date(a.date) - new Date(b.date)
   );
 
+  // handles the changed in time range (filter by) dropdown
+  const handleFilterChange = (event) => {
+    setTimeFilter(event.target.value);
+    // Modify labels and data based on the selected time range
+    // Example: adjust data to show last 3 months or last month
+  };
+
   return (
     <TxnHistoryContainer theme={theme}>
       <h2>Transaction History</h2>
       <FilterOptions>
-        <FilterButton 
-          active={filter === 'Recent'}
-          onClick={() => setFilter('Recent')}
+        <FilterLabel htmlFor="timeFilter">Filtered by:</FilterLabel>
+
+        <FilterSelect
+          id="FilterSelect"
+          value={timeFilter}
+          onChange={handleFilterChange} // call handleTimeFileChange on dropdown change
         >
-          Recent
-        </FilterButton>
-        <FilterButton 
-          active={filter === 'Oldest'}
-          onClick={() => setFilter('Oldest')}
-        >
-          Oldest
-        </FilterButton>
+          <option value="Recent">Recent</option>
+          <option value="Oldest">Oldest</option>
+        </FilterSelect>
       </FilterOptions>
       <Table>
         <thead>

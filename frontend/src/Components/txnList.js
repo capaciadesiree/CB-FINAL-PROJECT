@@ -9,11 +9,11 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 const TxnContainer = styled.div`
   display: flex;
   width: 100%;
+  height: 70%;
   max-width: 600px;
-  max-height: 300px;
   padding: 20px;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
   overflow-x: auto; // Add vertical scroll if content overflows (but, check other ways for border-radius to still apply on this side)
   position: relative;
   border-radius: 10px;
@@ -35,6 +35,7 @@ const TransactionItem = styled.div`
 const TransactionDetails = styled.div`
   display: flex;
   flex-direction: column;
+  font-size: 16px;
   flex-grow: 1;
   color: ${({ theme }) => theme.textColor};
 `;
@@ -48,6 +49,7 @@ const TransactionHeader = styled.div`
 
 const TransactionContent = styled.div`
   display: flex;
+  justify-content: space-evenly;
   align-items: center;
   gap: 10px;
 `;
@@ -63,7 +65,7 @@ const IconButton = styled.button`
   border-radius: 50%;
   color: ${({ theme }) => theme.textColor};
   cursor: pointer;
-  gap: 10px;
+  gap: 5px;
 
   &:hover {
     color: ${({ hoverColor }) => hoverColor};
@@ -214,7 +216,7 @@ const TransactionList = ({ category }) => {
             <TransactionContent>
               <p>${transaction.amount}</p>
               <p style={{ display: 'flex', alignItems: 'center' }}>
-                <CalendarMonthIcon style={{ marginRight: '5px' }} /> 
+                <CalendarMonthIcon style={{ marginRight: '2px' }} /> 
                 {new Date(transaction.date).toLocaleDateString('en-US', { 
                   month: '2-digit',
                   day: '2-digit',
@@ -222,21 +224,20 @@ const TransactionList = ({ category }) => {
                 })}
               </p>
               <p style={{ display: 'flex', alignItems: 'center' }}>
-                <ChatBubbleOutlineIcon style={{ marginRight: '5px' }} /> 
+                <ChatBubbleOutlineIcon style={{ marginRight: '2px' }} /> 
                 {transaction.description}
               </p>
+
+              <TransactionActions>
+                <IconButton onClick={() => editTransaction(transaction.id)} hoverColor="#3498db">
+                  <EditIcon />
+                </IconButton>
+                <IconButton onClick={() => deleteTransaction(transaction.id)} hoverColor="#e74c3c">
+                  <DeleteIcon />
+                </IconButton>
+              </TransactionActions>
             </TransactionContent>
           </TransactionDetails>
-
-          <TransactionActions>
-            <IconButton onClick={() => editTransaction(transaction.id)} hoverColor="#3498db">
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => deleteTransaction(transaction.id)} hoverColor="#e74c3c">
-              <DeleteIcon />
-            </IconButton>
-          </TransactionActions>
-
         </TransactionItem>
       ))}
 

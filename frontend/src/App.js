@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { ThemeProvider, useTheme } from './contexts/themeContext';
-import { lightTheme, darkTheme } from './themes';
+import { lightTheme, darkTheme } from './utils/themes';
 import GlobalStyle from "./styles/GlobalStyle";
 import Signup from "./pages/signup";
 import Dashboard from "./pages/dashboard";

@@ -7,7 +7,7 @@ const FormContainer = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
@@ -20,7 +20,7 @@ const FormTitle = styled.h2`
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: 95%;
   padding: 10px;
   border: none;
   border-radius: 5px;

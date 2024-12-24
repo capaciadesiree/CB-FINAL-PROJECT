@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+// import axios from 'axios';
 
 const BoxContainer = styled.div`
   border-radius: 10px;
@@ -21,16 +21,18 @@ const Amount = styled.p`
 `;
 
 const SummaryBox = ({ theme, title, dataKey, fullWidth }) => {
-  // // must delete, only for testing
-  // const sampleData = {
-  //   income: 6450.00,
-  //   expenses: 3190.00,
-  //   savings: 3260.00
-  // };
+  // must delete, only for testing
+  const sampleData = {
+    income: 6450.00,
+    expenses: 3190.00,
+    savings: 3260.00
+  };
 
-  // const [amount] = useState(sampleData[dataKey]);
-  const [amount, setAmount] = useState(0); // uncomment once db is connected
-
+  // initialize state with sample data
+  const [amount] = useState(sampleData[dataKey]);
+  /*
+  // uncomment once db is connected
+  const [amount, setAmount] = useState(0); 
   useEffect(() => {
     // Fetch totals from the API
     axios.get('/api/summary') // Replace with API endpoint
@@ -41,11 +43,11 @@ const SummaryBox = ({ theme, title, dataKey, fullWidth }) => {
         console.error('Error fetching summary data:', error);
       });
   }, [dataKey]);
-
+*/
   return (
     <BoxContainer theme={theme} fullWidth={fullWidth}>
       <Title>{title}</Title>
-      <Amount>${amount.toFixed(2)}</Amount>
+      <Amount>${amount ? amount.toFixed(2) : '0.00'}</Amount>
     </BoxContainer>
   );
 };

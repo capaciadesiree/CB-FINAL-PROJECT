@@ -16,6 +16,9 @@ const SidebarContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+
 `;
 
 const LogoContainer = styled.div`
@@ -42,8 +45,6 @@ const SidebarItem = styled(NavLink)`
   margin: 15px 30px;
   cursor: pointer;
   border-left: 5px solid transparent; // default border
-  font-weight: bold;
-  font-size: 18px;
   position: relative;
   text-decoration: none;
   color: ${({ theme }) => theme.textColor};
@@ -67,7 +68,6 @@ const LogoutContainer = styled.div`
 
 const LogoutLink = styled.a`
   text-decoration: none;
-  font-weight: bold;
   margin: 15px 30px;
   display: flex;
   cursor: pointer;
