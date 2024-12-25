@@ -13,8 +13,15 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  gap: 50px;
+  gap: 300px;
   
+`;
+
+const SubContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
 `;
 
 const ThemeToggle = styled.button`
@@ -137,31 +144,33 @@ const Header = ({ showGreeting }) => { // added prop in header to show greeting 
         <Placeholder />
       )}
 
-      <DateWrapper>
-        <DateIconWrapper>
-          <DateIcon />
-        </DateIconWrapper>
+      <SubContainer>
+        <DateWrapper>
+          <DateIconWrapper>
+            <DateIcon />
+          </DateIconWrapper>
 
-        <StyledDatePicker 
-          selected={startDate}
-          onChange={handleDateChange}
-          dateFormat='MM-dd-yyyy'
-        />
-      </DateWrapper>
+          <StyledDatePicker 
+            selected={startDate}
+            onChange={handleDateChange}
+            dateFormat='MM-dd-yyyy'
+          />
+        </DateWrapper>
 
-      <ThemeToggle onClick={toggleTheme}>
-        {isDarkMode ? <SunIcon /> : <MoonIcon />}
-        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-      </ThemeToggle>
-      
-      <UserProfile>
-        <UserIconWrapper>
-          <UserIcon />
-        </UserIconWrapper>
+        <ThemeToggle onClick={toggleTheme}>
+          {isDarkMode ? <SunIcon /> : <MoonIcon />}
+          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+        </ThemeToggle>
+        
+        <UserProfile>
+          <UserIconWrapper>
+            <UserIcon />
+          </UserIconWrapper>
 
-        <Name>Sabrina</Name>
-        {/* need to add api to get User's username */}
-      </UserProfile>
+          <Name>Sabrina</Name>
+          {/* need to add api to get User's username */}
+        </UserProfile>
+      </SubContainer>
     </HeaderContainer>
   );
 };
