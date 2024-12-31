@@ -59,7 +59,7 @@ const TxnListWrapper = styled.div`
 
 const SummaryWrapper = styled.div`
   grid-column: 2/6;
-  grid-row: 4/5;
+  grid-row: 3/5;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
