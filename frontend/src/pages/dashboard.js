@@ -4,7 +4,7 @@ import Sidebar from '../Components/sidebar';
 import Header from '../Components/header';
 import TxnHistory from '../Components/txnHistory';
 import Chart from '../Components/chart';
-import SummaryComponent from '../Components/summaryBox';
+import SummaryBox from '../Components/summaryBox';
 import Notepad from '../Components/notepad';
 
 const DashboardContainer = styled.div`
@@ -31,6 +31,7 @@ const HeaderWrapper = styled.div`
   grid-column: 2/4;
   grid-row: 1/2;
   padding: 20px;
+  height: 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -51,10 +52,8 @@ const ChartWrapper = styled.div`
 const SummaryWrapper = styled.div`
   grid-column: 3/3;
   grid-row: 2/3;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: ${({ theme }) => theme.componentBackground};
+  display: flex;
+  flex-direction: column;
 `;
 
 const TxnWrapper = styled.div`
@@ -91,7 +90,7 @@ const Dashboard = () => {
       </ChartWrapper>
 
       <SummaryWrapper>
-        <SummaryComponent layout='vertical' visibleBoxes={['income', 'expenses', 'savings']} />
+        <SummaryBox layout='vertical' visibleBoxes={['income', 'expenses', 'savings']} />
       </SummaryWrapper>
 
       <TxnWrapper>

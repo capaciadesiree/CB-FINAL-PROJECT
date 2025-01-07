@@ -3,6 +3,7 @@ import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, Toolti
 import { Line } from 'react-chartjs-2';
 import styled, { useTheme } from 'styled-components';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+// import axios from 'axios';
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, CategoryScale);
 
@@ -15,6 +16,7 @@ const TitleContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   position: relative;
+  margin-bottom: 10px;
 `;
 
 const TitleDropdown = styled.h2`
@@ -76,7 +78,10 @@ const LineChart = () => {
   const [dataType, setDataType] = useState('Income'); // stores current data type (income, expenses, savings)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // manages dropdown state (open/close)
   const [timeRange, setTimeRange] = useState('6 Months'); // stores current time range (by month)
+  const [apiData, setApiData] = useState([{ labels: [], data: [] }]); // state to store API data
+  // const [filteredData, setFilteredData] = useState({ labels: [], data: [] }); // state to store filtered data
   const chartRef = useRef(null);
+  const useSampleData = true; // toggle this to switch between sample to API data
 
   // color map by dataType
   const colorMapping = {
@@ -85,29 +90,84 @@ const LineChart = () => {
     Savings: '#3DBBBF'
   };
 
-  // // applied gradient for the chart
-  // useEffect(() => {
-  //   if (chartRef.current && chartRef.current.chartInstance) {
-  //     const chart = chartRef.current.chartInstance;
-  //     const ctx = chart.ctx;
-  //     const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  //     gradient.addColorStop(0, `${colorMapping[dataType]}20`);
-  //     gradient.addColorStop(1, colorMapping[dataType]);
+  /*
+  //funtion to fetch chart data from API
+  const fetchChartData = async () => {
+    try {
+      const response = await axios.get('replace_with_api_endpoint');
+      setApiData(response.data);
+    } catch (error) {
+      console.error('Error fetching chart data:', error);
+    }
+  };
 
-  //     chart.data.datasets[0].backgroundColor = gradient;
-  //     chart.update();
-  //   }
-  // }, [theme, dataType, colorMapping]);
+  // useEffect to fetch data when the component mounts
+  useEffect(() => {
+    if (!useSampleData) {
+      fetchChartData();
+    }
+  }, [useSampleData]);
+  */
+
+  // sample data for testing
+  const sampleData = {
+    Income: { 
+      labels: ['January', 'February', 'March', 'April', 'May', 'June'], 
+      data: [3000, 4000, 3200, 4500, 4800, 5300]
+    }, 
+    Expenses: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June'], 
+      data: [500, 1000, 400, 1000, 1100, 1400] 
+    },
+
+    Savings: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June'], 
+      data: [1500, 3000, 2500, 3500, 4000, 3200]
+    }
+  };
+
+  /*
+  // function to filter data based on time range
+  const filterDataByTimeRange = (data) => {
+    let filteredLabels = []; 
+    let filteredData = [];
+
+    switch (timeRange) {
+      case '1 Month':
+        filteredLabels = data.labels.slice(-1);
+        filteredData = data.data.slice(-1);
+        break;
+      case '3 Months':
+        filteredLabels = data.labels.slice(-2);
+        filteredData = data.data.slice(-2);
+        break;
+      case '6 Months':
+      default:
+        filteredLabels = data.labels;
+        filteredData = data.data;
+        break;
+    }
+
+    return { label: filteredLabels, data: filteredData };
+  };
+  */
+
+  // determine which data to use (API or sample)
+  const chartData = useSampleData ? sampleData[dataType] : apiData;
   
+  /*
+  useEffect(() => {
+    setFilteredData(filterDataByTimeRange(chartData));
+  }, [timeRange, chartData]);
+  */
+
   // chart data & style
   const data = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June'],
     datasets: [
       {
         label: dataType,
-        data: dataType === 'Income' ? [3000, 4000, 3200, 4500, 4800, 5300] :
-              dataType === 'Expenses' ? [2500, 3000, 2800, 3500, 3700, 3900] :
-              [500, 1000, 400, 1000, 1100, 1400],
+        data: chartData.data,
         fill: true,
         backgroundColor: colorMapping[dataType],
         borderColor: colorMapping[dataType],
@@ -173,6 +233,7 @@ const LineChart = () => {
   const handleDataTypeChange = (value) => {
     setDataType(value);
     setIsDropdownOpen(false); // auto close after selection
+    // setFilteredData(filterDataByTimeRange(sampleData[value])); // update filtered data on data type change
   };
 
   // handles dropdown open/close state of title
@@ -183,6 +244,7 @@ const LineChart = () => {
   // handles the changed in time range (filter by) dropdown
   const handleTimeRangeChange = (event) => {
     setTimeRange(event.target.value);
+    // setFilteredData(filterDataByTimeRange(chartData)); // update filtered data on time range change
     // Modify labels and data based on the selected time range
     // Example: adjust data to show last 3 months or last month
   };
@@ -200,21 +262,21 @@ const LineChart = () => {
             <option onClick={() => handleDataTypeChange('Savings')}>Savings</option>
           </DropdownMenu>
         )}
+        <TimeRangeContainer>
+          <TimeRangeLabel htmlFor="timeRangeSelect">Filtered by:</TimeRangeLabel>
+
+          <TimeRangeSelect
+            id="TimeRangeSelect"
+            value={timeRange}
+            onChange={handleTimeRangeChange} // call handleTimeRangeChange on dropdown change
+          >
+            <option value="6 Months">Last 6 Months</option>
+            <option value="2 Months">Last 3 Months</option>
+            <option value="1 Month">Last 1 Month</option>
+          </TimeRangeSelect>
+        </TimeRangeContainer>
       </TitleContainer>
 
-      <TimeRangeContainer>
-        <TimeRangeLabel htmlFor="timeRangeSelect">Filtered by:</TimeRangeLabel>
-
-        <TimeRangeSelect
-          id="TimeRangeSelect"
-          value={timeRange}
-          onChange={handleTimeRangeChange} // call handleTimeRangeChange on dropdown change
-        >
-          <option value="6 Months">Last 6 Months</option>
-          <option value="2 Months">Last 3 Months</option>
-          <option value="1 Month">Last 1 Month</option>
-        </TimeRangeSelect>
-      </TimeRangeContainer>
   
       <ChartContainer>
         <Line ref={chartRef} data={data} options={options} />

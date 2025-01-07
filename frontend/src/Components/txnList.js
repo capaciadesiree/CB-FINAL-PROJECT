@@ -14,7 +14,7 @@ const TxnContainer = styled.div`
   padding: 20px;
   flex-direction: column;
   gap: 10px;
-  overflow-x: auto; // Add vertical scroll if content overflows (but, check other ways for border-radius to still apply on this side)
+  overflow-y: auto; // Add vertical scroll if content overflows (but border-radius not visible on this side, check other ways)
   position: relative;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -92,6 +92,7 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 `;
 
 const ModalContent = styled.div`
@@ -99,16 +100,22 @@ const ModalContent = styled.div`
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 11;
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: 97%;
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid ${({ theme }) => theme.borderColor};
+  border: none;
   border-radius: 5px;
-  background-color: ${({ theme }) => theme.inputBackground};
-  color: ${({ theme }) => theme.textColor};
+  background-color: #E8EDEE;
+  color: #111111;
+  
+  &:focus {
+    outline: 2px solid ${({ theme }) => theme.borderColor};
+    border-color: ${({ theme }) => theme.borderColor};
+  }
 `;
 
 const Button = styled.button`
@@ -170,7 +177,7 @@ const TransactionList = ({ category }) => {
     // console.log(`Edit transaction with id: ${id}`);
   };
 
-  // save edited transation
+  // save edited transation from pop-up modal
   const saveEditTransaction = (updatedTransaction) => {
     // sends back edited transaction to backend via PUT req and updates the state
     fetch(`/api/transactions/${currentTransaction.id}`, {

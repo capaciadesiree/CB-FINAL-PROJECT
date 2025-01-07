@@ -30,6 +30,7 @@ const HeaderWrapper = styled.div`
   grid-column: 2/4;
   grid-row: 1/2;
   padding: 20px;
+  height: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;

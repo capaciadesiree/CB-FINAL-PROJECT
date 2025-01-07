@@ -12,9 +12,9 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-height: 80px;
   padding: 20px;
   gap: 300px;
-  
 `;
 
 const SubContainer = styled.div`
@@ -50,7 +50,9 @@ const Greeting = styled.div`
 `;
 
 const UserName = styled.div`
-  font-weight: normal;
+  font-weight: bold;
+  font-size: 24px;
+  margin-bottom: 5px;
 `;
 
 const Message = styled.div`
@@ -137,7 +139,7 @@ const Header = ({ showGreeting }) => { // added prop in header to show greeting 
     <HeaderContainer>
       {showGreeting ? (
         <Greeting>
-          <UserName><h2>Hi Sabrina,</h2></UserName>
+          <UserName>Hi Sabrina,</UserName>
           <Message>Welcome back!</Message>
         </Greeting>
       ) : (

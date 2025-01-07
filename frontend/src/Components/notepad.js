@@ -10,7 +10,7 @@ const NotepadContainer = styled.div`
 `;
 
 const TextArea = styled.textarea`
-  width: 100%;
+  width: 80%;
   height: 200px;
   padding: 10px;
   font-size: 16px;

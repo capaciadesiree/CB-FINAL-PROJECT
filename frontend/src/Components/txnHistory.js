@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+// import axios from 'axios';
 
 const TxnHistoryContainer = styled.div`
   padding: 20px;
@@ -8,10 +9,11 @@ const TxnHistoryContainer = styled.div`
 `;
 
 const FilterOptions = styled.div`
-  margin-top: 10px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+  position: relative;
+  margin-bottom: 10px;
 `;
 
 const FilterLabel = styled.label`
@@ -47,43 +49,80 @@ const TableCell = styled.td`
   border-bottom: 1px solid ${({ theme }) => theme.borderColor};
 `;
 
-const TxnHistory = ({ theme }) => {
-  const [filter, timeFilter, setTimeFilter] = useState('Recent'); // stores current time range (by recent or oldest)
+const ComponenHeader = styled.div`
+  font-weight: bold;
+  font-size: 24px;
+`;
 
-  const transactions = [
+const TimeRangeContainer = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+const TxnHistory = ({ theme }) => {
+  const [timeFilter, setTimeFilter] = useState('Recent'); // stores current time range (by recent or oldest)
+  const [apiTransactions, setApiTransactions] = useState([]); //state to store API transactions
+
+  // sample data for testing
+  const sampleTransactions = [
     { description: 'Salary', type: 'Designing', date: '09/15/2024', amount: '$850.00' },
     { description: 'Freelance', type: 'Development', date: '09/14/2024', amount: '$500.00' },
     { description: 'Consulting', type: 'Consulting', date: '09/13/2024', amount: '$300.00' },
   ];
+/*
+  // function to fetch transaction history from API
+  const fetchTransactions = async () => {
+    try {
+      const response = await axios.get('replace_with_api_endpoint'); // replace with your API endpoint
+      setApiTransactions(response.data); // assuming the API response returns an array of transactions
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+  };
 
-  const filteredTransactions = [...transactions].sort((a, b) => 
-    filter === 'Recent' 
-      ? new Date(b.date) - new Date(a.date) 
+  // useEffect to fetch transactions when the component mounts 
+  useEffect(() => { 
+    fetchTransactions(); 
+  }, []);
+*/
+
+  // combined transactions (API transactions + sample transactions)
+  const allTransactions = [...apiTransactions, ...sampleTransactions];
+
+  // filters transactions based on timeFilter (recent or oldest)
+  const filteredTransactions = [...sampleTransactions].sort((a, b) => 
+    timeFilter === 'Recent' 
+      ? new Date(b.date) - new Date(a.date)
       : new Date(a.date) - new Date(b.date)
   );
 
   // handles the changed in time range (filter by) dropdown
   const handleFilterChange = (event) => {
     setTimeFilter(event.target.value);
-    // Modify labels and data based on the selected time range
-    // Example: adjust data to show last 3 months or last month
+
   };
 
   return (
     <TxnHistoryContainer theme={theme}>
-      <h2>Transaction History</h2>
       <FilterOptions>
-        <FilterLabel htmlFor="timeFilter">Filtered by:</FilterLabel>
+        <ComponenHeader>Transaction History</ComponenHeader>
+        
+        <TimeRangeContainer>
+          <FilterLabel htmlFor="timeFilter">Filtered by:</FilterLabel>
 
-        <FilterSelect
-          id="FilterSelect"
-          value={timeFilter}
-          onChange={handleFilterChange} // call handleTimeFileChange on dropdown change
-        >
-          <option value="Recent">Recent</option>
-          <option value="Oldest">Oldest</option>
-        </FilterSelect>
+          <FilterSelect
+            id="timeFilter"
+            value={timeFilter}
+            onChange={handleFilterChange} // call handleTimeFileChange on dropdown change
+          >
+            <option value="Recent">Recent</option>
+            <option value="Oldest">Oldest</option>
+          </FilterSelect>
+        </TimeRangeContainer>
       </FilterOptions>
+      
       <Table>
         <thead>
           <tr>
