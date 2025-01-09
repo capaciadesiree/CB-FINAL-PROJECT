@@ -42,4 +42,6 @@ router.get('/signup', authController.getSignup)
 
     .get('/logout', authController.logout)
 
+    .get('/user', authController.getUser) //added user route for fetching, authentications and other actions
+
 module.exports = router;

@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { validationResult } = require('express-validator');
 const User = require('../models/user');
-const user = require('../models/user');
 
 exports.getSignup = (req, res) => {
   // res.render('signup'); // render signup page
@@ -93,4 +92,22 @@ exports.logout = (req, res) => {
   res.setHeader('Content-Type', 'application/json'); // for json formatting
   res.status(200).json({ message: 'User successfully logged out' });
   });
+};
+
+exports.getUser = async (req, res) => {
+  try {
+    const userId = req.user && req.user.id;
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ firstName: user.first_name });
+  } catch (error) {
+    return res.status(500).json({ message: 'SERVER ERROR' });
+  }
 };

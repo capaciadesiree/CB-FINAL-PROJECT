@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
@@ -130,16 +131,40 @@ const Name = styled.div`
 const Header = ({ showGreeting }) => { // added prop in header to show greeting depends on the page
   const { isDarkMode, toggleTheme } = useTheme();
   const [startDate, setStartDate] = useState(new Date());
+  const [userName, setUserName] = useState('User');
   
   const handleDateChange = date => {
     setStartDate(date);
   };
 
+  const fetchUserName = async () => {
+    try {
+      const response = await axios.get('/api/user', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: 'true',
+      });
+      return response.data.firstName;
+    } catch (error) {
+      console.error('Error fetching user name:', error);
+      return 'User'
+    }
+  };
+
+  useEffect(() => {
+    const getUserName = async () => {
+      const name = await fetchUserName();
+      setUserName(name);
+    };
+    getUserName();
+  }, []);
+
   return (
     <HeaderContainer>
       {showGreeting ? (
         <Greeting>
-          <UserName>Hi Sabrina,</UserName>
+          <UserName>Hi {userName},</UserName>
           <Message>Welcome back!</Message>
         </Greeting>
       ) : (
@@ -169,7 +194,7 @@ const Header = ({ showGreeting }) => { // added prop in header to show greeting 
             <UserIcon />
           </UserIconWrapper>
 
-          <Name>Sabrina</Name>
+          <Name>{userName}</Name>
           {/* need to add api to get User's username */}
         </UserProfile>
       </SubContainer>
