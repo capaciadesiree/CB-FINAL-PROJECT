@@ -77,13 +77,6 @@ exports.postLogin = (req, res, next) => {
   })(req, res, next);
 };
 
-// redirect-based response (use when frontend is connected)
-// exports.postLogin = passport.authenticate('local', {
-//   successRedirect: '/dashboard',
-//   failureRedirect: '/auth/login',
-//   failureFlash: true
-// });
-
 exports.logout = (req, res) => {
  req.logout((err) => {
   if (err) {

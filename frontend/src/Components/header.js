@@ -15,7 +15,7 @@ const HeaderContainer = styled.header`
   align-items: center;
   max-height: 80px;
   padding: 20px;
-  gap: 300px;
+  gap: 400px;
 `;
 
 const SubContainer = styled.div`
@@ -36,7 +36,7 @@ const ThemeToggle = styled.button`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0;
+  width: 180px;
 
   svg {
     width: 20%;
@@ -45,12 +45,14 @@ const ThemeToggle = styled.button`
 `;
 
 const Greeting = styled.div`
+  width: 170px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `;
 
 const UserName = styled.div`
+  width: 100px;
   font-weight: bold;
   font-size: 24px;
   margin-bottom: 5px;

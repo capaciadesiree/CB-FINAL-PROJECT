@@ -72,6 +72,15 @@ const Copyright = styled.p`
   position: absolute;
   bottom: -20px;
   right: 10px;
+
+  a {
+    color: #FFFFFF;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #4BA0BF;
+  }
 `;
 
 const Signup = () => {
@@ -95,7 +104,7 @@ const Signup = () => {
 
       <RightColumn>
         <Copyright>
-          <p>&#169; 2024 All rights reserved. Designed and Developed by Desiree Capacia.</p>
+          <p>&#169; 2024 All rights reserved. Designed and Developed by <a href="https://www.desireecapacia.com" target="_blank" rel="noopener noreferrer">Desiree Capacia</a>.</p>
         </Copyright>
       </RightColumn>
     </PageContainer>

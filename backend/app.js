@@ -21,7 +21,7 @@ app.use(cors({
 
 // set up session management
 app.use(session({ 
-  secret: 'your_secret_key', 
+  secret: process.env.SECRET_KEY, 
   resave: false, 
   saveUninitialized: false,
   cookie: { secure: false } // set to true if using HTTPS
@@ -32,9 +32,9 @@ app.use(passport.session());
 
 require('./config/passport');
 
-app.get('/', (req, res) => {
-  res.send('Homepage')
-});
+// app.get('/', (req, res) => {
+//   res.send('Homepage')
+// });
 
 // auth routes & added middleware for user
 app.use('/api', authRoutes);

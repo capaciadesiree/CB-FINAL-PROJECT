@@ -42,6 +42,8 @@ const HeaderWrapper = styled.div`
 const ChartWrapper = styled.div`
   grid-column: 2/2;
   grid-row: 2/3;
+  width: 121%;
+  height: 60%;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -51,6 +53,8 @@ const ChartWrapper = styled.div`
 const TxnWrapper = styled.div`
   grid-column: 2/2;
   grid-row: 3/4;
+  width: 121%;
+  height: 100%;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

@@ -47,8 +47,8 @@ const InlineFormGroup = styled.div`
 
 const FormComponent = ({ isSignup }) => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -64,13 +64,32 @@ const FormComponent = ({ isSignup }) => {
   // form validation
   const validate = () => {
     const errors = {};
+
+    // email validation
     if (!formData.email) errors.email = 'Email is required';
     if (!isEmail(formData.email)) errors.email = 'Invalid email format';
-    if (!formData.password) errors.password = 'Password is required';
-    if (formData.password.length < 8) errors.password = 'Password must be at least 8 characters';
+
+    // password validation
+    if (!formData.password) {
+      errors.password = ['Password is required'];
+    } else {
+      const passwordErrors = [];
+      if (formData.password.length < 8) passwordErrors.push('Password must be at least 8 characters');
+      if (!/[A-Z]/.test(formData.password)) passwordErrors.push('Password must contain at least one uppercase letter');
+      if (!/[a-z]/.test(formData.password)) passwordErrors.push('Password must contain at least one lowercase letter');
+      if (!/[0-9]/.test(formData.password)) passwordErrors.push('Password must contain at least one number');
+      if (!/^[A-Za-z0-9!@#$%&*_+]*$/.test(formData.password)) passwordErrors.push('Password contains invalid special characters. Only !@#$%&*_+ are allowed');
+      if (/\s/.test(formData.password)) passwordErrors.push('Password cannot contain spaces');
+      
+      if (passwordErrors.length > 0) {
+        errors.password = passwordErrors;
+      }
+    }
+
+    // signup validation: all input required
     if (isSignup) {
-      if (!formData.firstName) errors.firstName = 'First Name is required';
-      if (!formData.lastName) errors.lastName = 'Last Name is required';
+      if (!formData.first_name) errors.first_name = 'First Name is required';
+      if (!formData.last_name) errors.last_name = 'Last Name is required';
       if (formData.password !== formData.confirmPassword) errors.confirmPassword = 'Passwords must match';
     }
     return errors;
@@ -91,7 +110,10 @@ const FormComponent = ({ isSignup }) => {
       setErrors({});
       try {
         // Determine the API endpoint to send data to, based on whether the user is signing up or logging in
-        const endpoint = isSignup ? '/api/signup' : '/api/login';
+        const endpoint = isSignup ? 'http://localhost:4000/api/signup' : 'http://localhost:4000/api/login';
+
+        // log to debug (400 Bad Request)
+        console.log('Form Data:', formData);
 
         // Send the form data to the server using a POST request
         const response = await axios.post(endpoint, formData);
@@ -127,22 +149,22 @@ const FormComponent = ({ isSignup }) => {
           <FormGroup>
             <Input 
               type="text" 
-              id="firstName" 
-              name="firstName" 
+              id="first_name" 
+              name="first_name" 
               placeholder='First Name'
-              value={formData.firstName} 
+              value={formData.first_name} 
               onChange={handleChange} />
-            {errors.firstName && <Error>{errors.firstName}</Error>}
+            {errors.first_name && <Error>{errors.first_name}</Error>}
           </FormGroup>
           <FormGroup>
             <Input 
               type='text' 
-              id='lastName' 
-              name='lastName' 
+              id='last_name' 
+              name='last_name' 
               placeholder='Last Name'
-              value={formData.lastName} 
+              value={formData.last_name} 
               onChange={handleChange} />
-            {errors.lastName && <Error>{errors.lastName}</Error>}
+            {errors.last_name && <Error>{errors.last_name}</Error>}
           </FormGroup>
         </InlineFormGroup>
       )}
@@ -164,7 +186,15 @@ const FormComponent = ({ isSignup }) => {
           placeholder='Enter your Password'
           value={formData.password} 
           onChange={handleChange} />
-        {errors.password && <Error>{errors.password}</Error>}
+        {Array.isArray(errors.password) && (
+          <Error>
+            <ul>
+              {errors.password.map((error, index) => (
+                <li key={index}>{error}</li>
+              ))}
+            </ul>
+          </Error> 
+        )}
       </FormGroup>
       {isSignup && (
         <FormGroup>
