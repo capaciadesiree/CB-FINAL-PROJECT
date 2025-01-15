@@ -24,13 +24,22 @@ app.use(session({
   secret: process.env.SECRET_KEY, 
   resave: false, 
   saveUninitialized: false,
-  cookie: { secure: false } // set to true if using HTTPS
+  cookie: { 
+    secure: true, // set to true if using HTTPS
+    httpOnly: true, // Temporarily set false for testing (change to true in production)
+    sameSite: 'None', // Ensure cross-origin requests are allowed to send cookies
+  } 
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 require('./config/passport');
+
+app.use((req, res, next) => {
+  console.log('Session Data:', req.session);  // Log the session data
+  next();
+});
 
 // app.get('/', (req, res) => {
 //   res.send('Homepage')

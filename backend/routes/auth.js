@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { check, body } = require('express-validator');
-const authController = require('../controllers/authController')
+const authController = require('../controllers/authController');
+const { isAuthenticated } = require('../middlewares/auth');
 
 router.get('/signup', authController.getSignup)
     .post('/signup', [
@@ -42,6 +43,6 @@ router.get('/signup', authController.getSignup)
 
     .get('/logout', authController.logout)
 
-    .get('/user', authController.getUser) //added user route for fetching, authentications and other actions
+    .get('/user', isAuthenticated, authController.getUser) //added user route for fetching, authentications and other actions
 
 module.exports = router;

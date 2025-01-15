@@ -10,7 +10,7 @@ import TransactionHistory from '../pages/transactionHistory';
 
 const SidebarContainer = styled.div`
   width: 250px;
-  height: 100vh;
+  height: 90vh;
   display: flex;
   align-items: flex-start;
   flex-direction: column;

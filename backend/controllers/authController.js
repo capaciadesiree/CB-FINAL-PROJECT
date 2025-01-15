@@ -70,9 +70,23 @@ exports.postLogin = (req, res, next) => {
     }
     req.logIn(user, (err) => {
       if (err) {
+        console.error('Error logging in user:', err);
         return res.status(500).json({ message: 'SERVER ERROR', error: err });
       }
-      return res.status(200).json({ message: 'Login successful', user });
+
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          // console.error('Session save error:', saveErr);
+          return res.status(500).json({ message: 'SERVER ERROR', error: saveErr });
+        }
+
+        res.setHeader('Test-Cookie', 'This-is-a-test');
+
+        console.log('Session saved successfully');
+        console.log('User successfully logged in:', user);
+
+        return res.status(200).json({ message: 'Login successful', user });
+      });
     });
   })(req, res, next);
 };

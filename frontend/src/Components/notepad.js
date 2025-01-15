@@ -4,8 +4,8 @@ import styled from 'styled-components';
 const NotepadContainer = styled.div`
   padding: 20px;
   // background-color: ${({ theme }) => theme.containerBackground};
-  width: 100%;
-  max-width: 600px;
+  // width: 100%;
+  // max-width: 600px;
   margin: 0 auto;
 `;
 
@@ -16,6 +16,7 @@ const TextArea = styled.textarea`
   font-size: 16px;
   border: none;
   background-color: transparent;
+  color: ${({ theme }) => theme.textColor};
 `;
 
 const Notepad = ({ theme }) => {
