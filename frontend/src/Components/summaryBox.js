@@ -25,7 +25,7 @@ const BoxContainer = styled.div`
   display: flex;
   align-items: ${({ layout }) => layout === 'horizontal' ? 'center' : 'flex-start'};
   // flex: ${({ layout }) => layout === 'horizontal' ? '1' : 'initial'};
-  margin-right: ${({ layout, boxType }) => layout === 'horizontal' && boxType !== 'expenses' ? '10px' : '0'};
+  margin-right: ${({ layout, boxType }) => layout === 'horizontal' && boxType !== 'expenses' ? '0px' : '0'};
   flex-direction: ${({ layout }) => layout === 'horizontal' ? 'row' : 'column'};
   text-align: ${({ layout }) => layout === 'horizontal' ? 'left' : 'center'};
   justify-content: ${({ layout }) => layout === 'horizontal' ? 'space-between' : 'center'};

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
-const FormContainer = styled.div`
+const FormContainer = styled.form`
   width: 100%;
+  // height: 50vh;
   max-width: 600px;
   padding: 20px;
   display: flex;
@@ -49,16 +51,50 @@ const Button = styled.button`
   }
 `;
 
+const ConfirmationMessage = styled.div` 
+  margin-top: 10px; 
+  color: green; 
+`;
+
 const TxnForm = ({ title, buttonText, placeholder }) => {
   const [description, setDescription] = useState('');
-  const [type, setType] = useState('');
+  const [typeOf, setTypeOf] = useState('');
   const [date, setDate] = useState('');
   const [amount, setAmount] = useState('');
-
-  const handleSubmit = (e) => {
+  const [confirmationMessage, setconfirmationMessage] = useState('');
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log({ description, type, date, amount });
+    console.log('Form submitted');
+
+    const formData = {
+      type: title.includes('income') ? 'income' : 'expense', // Set type based on form title
+      typeOf,
+      description,
+      date,
+      amount
+    };
+    // Debug log
+    console.log('Submitting data:', formData); // Debug form data
+
+    try {
+      const baseUrl = 'http://localhost:4000/api';
+      const endpoint = formData.type === 'income' ? '/add-income' : '/add-expense';
+      // Debug log
+      console.log('Submitting to:', `${baseUrl}${endpoint}`, 'with data:', formData);
+      
+      const response = await axios.post(`${baseUrl}${endpoint}`, formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      });
+      console.log('Transaction added:', response.data);
+      setconfirmationMessage('Transaction successfully added!');
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+      setconfirmationMessage('Error adding transaction. Please try again.');
+    }
   };
 
   return (
@@ -67,8 +103,8 @@ const TxnForm = ({ title, buttonText, placeholder }) => {
       <Input
         type="text"
         placeholder={placeholder}
-        value={type}
-        onChange={(e) => setType(e.target.value)}
+        value={typeOf}
+        onChange={(e) => setTypeOf(e.target.value)}
       />
       <Input
         type="text"
@@ -88,6 +124,9 @@ const TxnForm = ({ title, buttonText, placeholder }) => {
         onChange={(e) => setAmount(e.target.value)}
       />
       <Button type="submit">{buttonText}</Button>
+      {confirmationMessage && 
+        <ConfirmationMessage> {confirmationMessage} </ConfirmationMessage>
+      }
     </FormContainer>
   );
 };

@@ -1,13 +1,13 @@
 const ExpenseSchema = require('../models/expense');
 
 exports.addExpense = async (req, res) => {
-  const {typeOf, amount, description, date} = req.body;
+  const {typeOf, description, date, amount} = req.body;
 
   const expense = ExpenseSchema({
     typeOf,
-    amount,
     description,
-    date
+    date,
+    amount
   });
 
   try {
@@ -41,10 +41,10 @@ exports.getExpense = async (req, res) => {
 };
 
 exports.editExpense = async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.params;
   const updateData = req.body;
  
-  ExpenseSchema.findByIdAndUpdate(id, updateData, { new: true }) // find and update ID with new data, and returns the update if true
+  ExpenseSchema.findByIdAndUpdate(_id, updateData, { new: true }) // find and update ID with new data, and returns the update if true
    .then((expense) => {
      if (!expense) {
        return res.status(404).json({ message: 'Expense not found' });
@@ -59,8 +59,8 @@ exports.editExpense = async (req, res) => {
  };
 
 exports.deleteExpense = async (req, res) => {
- const { id } = req.params;
- ExpenseSchema.findByIdAndDelete(id) // find and delete ID
+ const { _id } = req.params;
+ ExpenseSchema.findByIdAndDelete(_id) // find and delete ID
   .then((expense) => {
     res.setHeader('Content-Type', 'application/json'); // for json formatting
     res.status(200).json({ message: 'Expense Successfully Deleted' });

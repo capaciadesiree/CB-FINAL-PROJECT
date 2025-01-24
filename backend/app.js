@@ -7,7 +7,7 @@ require('dotenv').config();
 const db = require('./db/db');
 const { readdirSync } = require('fs');
 const app = express();
-const authRoutes = require('./routes/auth');
+// const authRoutes = require('./routes/auth');
 
 // middlewares
 app.use(express.json());
@@ -25,9 +25,9 @@ app.use(session({
   resave: false, 
   saveUninitialized: false,
   cookie: { 
-    secure: true, // set to true if using HTTPS
-    httpOnly: true, // Temporarily set false for testing (change to true in production)
-    sameSite: 'None', // Ensure cross-origin requests are allowed to send cookies
+    secure: false, // set to true if using HTTPS
+    httpOnly: false, // Temporarily set false for testing (change to true in production)
+    // sameSite: 'Lax', // Ensure cross-origin requests are allowed to send cookies
   } 
 }));
 
@@ -36,6 +36,7 @@ app.use(passport.session());
 
 require('./config/passport');
 
+// Log session data for debugging
 app.use((req, res, next) => {
   console.log('Session Data:', req.session);  // Log the session data
   next();
@@ -46,14 +47,10 @@ app.use((req, res, next) => {
 // });
 
 // auth routes & added middleware for user
-app.use('/api', authRoutes);
+// app.use('/api', authRoutes);
 
 // Dynamically load and use all route files from the 'routes' directory
-readdirSync('./routes').map((route) => {
-  if (route !== 'auth.js') { // Avoid loading auth routes again
-    app.use('/api/v1', require('./routes/' + route ));
-  }
-});
+readdirSync('./routes').map((route) => app.use('/api', require('./routes/' + route )))
 
 // Initialize server and connect to database
 const PORT = process.env.PORT

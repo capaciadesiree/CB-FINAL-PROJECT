@@ -1,13 +1,13 @@
 const IncomeSchema = require('../models/income');
 
 exports.addIncome = async (req, res) => {
-  const {typeOf, amount, description, date} = req.body;
+  const {typeOf, description, date, amount} = req.body;
 
   const income = IncomeSchema({
     typeOf,
-    amount,
     description,
-    date
+    date,
+    amount
   });
 
   try {
@@ -41,10 +41,10 @@ exports.getIncome = async (req, res) => {
 };
 
 exports.editIncome = async (req, res) => {
- const { id } = req.params;
+ const { _id } = req.params;
  const updateData = req.body;
 
- IncomeSchema.findByIdAndUpdate(id, updateData, { new: true })
+ IncomeSchema.findByIdAndUpdate(_id, updateData, { new: true })
   .then((income) => {
     if (!income) {
       return res.status(404).json({ message: 'Income not found' });
@@ -59,8 +59,8 @@ exports.editIncome = async (req, res) => {
 };
 
 exports.deleteIncome = async (req, res) => {
- const { id } = req.params;
- IncomeSchema.findByIdAndDelete(id)
+ const { _id } = req.params;
+ IncomeSchema.findByIdAndDelete(_id)
   .then((income) => {
     res.setHeader('Content-Type', 'application/json'); // for json formatting
     res.status(200).json({ message: 'Income Successfully Deleted' });

@@ -11,7 +11,9 @@ const DashboardContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   grid-template-rows: auto 1fr auto;
-  height: 100vh;
+  // grid-template-columns: 300px 860px 240px 0px;
+  // grid-template-rows: 120px 390px 360px;
+  height: 96vh;
   gap: 10px;
   padding: 10px;
   background-color: ${({ theme }) => theme.dashboardBackground};
@@ -22,7 +24,7 @@ const DashboardContainer = styled.div`
   grid-column: 1/2;
   grid-row: 1/4;
   padding: 20px;
-  height: 80%;
+  height: 94%;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
@@ -61,7 +63,7 @@ const TxnWrapper = styled.div`
   grid-column: 2/3;
   grid-row: 3/4;
   padding: 20px;
-  height: 80%;
+  height: 85%;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
@@ -71,7 +73,7 @@ const NotesWrapper = styled.div`
   grid-column: 3/4;
   grid-row: 3/4;
   padding: 20px;
-  height: 80%;
+  height: 85%;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};

@@ -68,6 +68,7 @@ const TimeRangeSelect = styled.select`
 
 const ChartContainer = styled.div`
   width: 100%;
+  height: 90%;
   max-width:800px;
   margin: 0 auto;
 `;
@@ -78,8 +79,30 @@ const LineChart = () => {
   const [dataType, setDataType] = useState('Income'); // stores current data type (income, expenses, savings)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // manages dropdown state (open/close)
   const [timeRange, setTimeRange] = useState('6 Months'); // stores current time range (by month)
-  const [apiData, setApiData] = useState([{ labels: [], data: [] }]); // state to store API data
-  // const [filteredData, setFilteredData] = useState({ labels: [], data: [] }); // state to store filtered data
+ 
+  // state to store API data
+  const [apiData, setApiData] = useState({ 
+    Income: { 
+      labels: [], 
+      data: [] 
+    }, 
+    Expenses: { 
+      labels: [], 
+      data: [] 
+    }, 
+    Savings: { 
+      labels: [], 
+      data: [] 
+    } 
+  }); 
+  /*
+  // state to store filtered data
+  const [filteredData, setFilteredData] = useState({ 
+    labels: [], 
+    data: [] 
+  }); 
+  */
+  
   const chartRef = useRef(null);
   const useSampleData = true; // toggle this to switch between sample to API data
 
@@ -125,9 +148,12 @@ const LineChart = () => {
       data: [1500, 3000, 2500, 3500, 4000, 3200]
     }
   };
+  
+  // determine which data to use (API or sample)
+  const chartData = useSampleData ? sampleData[dataType] : apiData[dataType];
 
+  // function to filter data & labels based on time range
   /*
-  // function to filter data based on time range
   const filterDataByTimeRange = (data) => {
     let filteredLabels = []; 
     let filteredData = [];
@@ -138,8 +164,8 @@ const LineChart = () => {
         filteredData = data.data.slice(-1);
         break;
       case '3 Months':
-        filteredLabels = data.labels.slice(-2);
-        filteredData = data.data.slice(-2);
+        filteredLabels = data.labels.slice(-3);
+        filteredData = data.data.slice(-3);
         break;
       case '6 Months':
       default:
@@ -148,22 +174,18 @@ const LineChart = () => {
         break;
     }
 
-    return { label: filteredLabels, data: filteredData };
+    return { labels: filteredLabels, data: filteredData };
   };
-  */
 
-  // determine which data to use (API or sample)
-  const chartData = useSampleData ? sampleData[dataType] : apiData;
-  
-  /*
   useEffect(() => {
-    setFilteredData(filterDataByTimeRange(chartData));
-  }, [timeRange, chartData]);
+    const updatedFilteredData = filterDataByTimeRange(chartData);
+    setFilteredData(updatedFilteredData);
+  }, [timeRange, dataType, chartData]);
   */
 
   // chart data & style
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    labels: ['January', 'February', 'March', 'April', 'May', 'June'], // change to filteredData.labels 
     datasets: [
       {
         label: dataType,
@@ -233,7 +255,6 @@ const LineChart = () => {
   const handleDataTypeChange = (value) => {
     setDataType(value);
     setIsDropdownOpen(false); // auto close after selection
-    // setFilteredData(filterDataByTimeRange(sampleData[value])); // update filtered data on data type change
   };
 
   // handles dropdown open/close state of title
@@ -242,9 +263,8 @@ const LineChart = () => {
   };
 
   // handles the changed in time range (filter by) dropdown
-  const handleTimeRangeChange = (event) => {
+  const handleFilterChange = (event) => {
     setTimeRange(event.target.value);
-    // setFilteredData(filterDataByTimeRange(chartData)); // update filtered data on time range change
     // Modify labels and data based on the selected time range
     // Example: adjust data to show last 3 months or last month
   };
@@ -268,7 +288,7 @@ const LineChart = () => {
           <TimeRangeSelect
             id="TimeRangeSelect"
             value={timeRange}
-            onChange={handleTimeRangeChange} // call handleTimeRangeChange on dropdown change
+            onChange={handleFilterChange} // call handleFilterChange on dropdown change
           >
             <option value="6 Months">Last 6 Months</option>
             <option value="2 Months">Last 3 Months</option>

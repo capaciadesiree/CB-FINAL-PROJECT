@@ -15,7 +15,8 @@ exports.postSignup = async (req, res) => {
     first_name,
     last_name,
     email,
-    password
+    password,
+    confirmPassword // added this
   });
 
   try {
@@ -70,7 +71,7 @@ exports.postLogin = (req, res, next) => {
     }
     req.logIn(user, (err) => {
       if (err) {
-        console.error('Error logging in user:', err);
+        // console.error('Error logging in user:', err);
         return res.status(500).json({ message: 'SERVER ERROR', error: err });
       }
 
@@ -81,10 +82,10 @@ exports.postLogin = (req, res, next) => {
         }
 
         res.setHeader('Test-Cookie', 'This-is-a-test');
-
+        /*
         console.log('Session saved successfully');
         console.log('User successfully logged in:', user);
-
+        */
         return res.status(200).json({ message: 'Login successful', user });
       });
     });
@@ -103,10 +104,12 @@ exports.logout = (req, res) => {
 
 exports.getUser = async (req, res) => {
   try {
+    // console.log('User is populated', req.user)
     const userId = req.user && req.user.id;
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
+
     const user = await User.findById(userId);
 
     if (!user) {

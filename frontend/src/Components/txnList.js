@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import EditIcon from './editButton';
 import DeleteIcon from './deleteButton';
@@ -8,8 +9,8 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 // txnList styles
 const TxnContainer = styled.div`
   display: flex;
-  width: 100%;
-  height: 70%;
+  width: 510px;
+  height: 300px;
   max-width: 600px;
   padding: 20px;
   flex-direction: column;
@@ -132,155 +133,159 @@ const Button = styled.button`
   }
 `;
 
-const TransactionList = ({ category }) => {
-  const [transactions, setTransactions] = useState([
-    // Dummy data for Income and Expense
-    { id: 1, description: 'Full-time', amount: 850.0, type: 'Salary', date: '2024-09-15', category: 'Income' },
-    { id: 2, description: 'Project based', amount: 850.0, type: 'Freelance', date: '2024-09-15', category: 'Income' },
-    { id: 3, description: 'House rent', amount: 850.0, type: 'Rent', date: '2024-09-15', category: 'Expense' },
-    { id: 4, description: 'Grocery', amount: 850.0, type: 'Food', date: '2024-09-15', category: 'Expense' },
-  ]);
-  // form modal for editing existing transactions
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false); 
-  const [currentTransaction, setCurrentTransaction] = useState(null);
+const EmptyMessage = styled.p`
+  font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
+  line-height: 1.5;
+  color:${({ theme }) => theme.subTextColor};
+`;
+
+const TransactionList = ({ type }) => {
+  const [transactions, setTransactions] = useState([]); // state for all transactions
+  console.log(`Fetching transactions for type: ${type}`); // debug log
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // form modal for editing existing transactions
+  const [currentTransaction, setCurrentTransaction] = useState(null); // State for editing a current transaction
   
-/*
-  // Uncomment this block later to fetch from backend
+  const baseUrl = 'http://localhost:4000/api';
+
+  // Map of endpoints for income and expense
+  const endpoint = {
+    get: type === 'income' ? '/get-income' : '/get-expense',
+    put: type === 'income' ? '/edit-income/_id' : '/edit-expense/_id',
+    delete: type === 'income' ? '/delete-income/_id' : '/delete-expense/_id',
+  };
+
+  // Fetch transactions on component load
   useEffect(() => {
-    //  fetch transactions from backend based on category (income or expense)
-    fetch(`/api/transactions?category=${category}`) //replace "/api/transactions" with actual path
-      .then(response => response.json())
-      .then(data => setTransactions(data))
-      .catch(error => console.error('Error fetching transactions:', error));
-  }, [category]); // dependency array includes 'category'
+    axios
+      .get(`${baseUrl}${endpoint.get}`)
+      .then((response) => setTransactions(response.data))
+      .catch((error) => console.error('Error fetching transactions:', error));
+  }, [type, endpoint.get]); // Refetch whenever the `type` prop or endpoint.get changes
 
-  const addTransaction = (newTransaction) => {
-    newTransaction.category = category; // set transaction list's category
-    fetch('api/transactions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newTransaction),
-    })
-    .then(response => response.json()) 
-    .then(addedTransaction => setTransactions([...transactions, addedTransaction])) 
-    .catch(error => console.error('Error adding transaction:', error));
-  };
-*/
+  // Edit a transaction
+  const editTransaction = (updatedTransaction) => {
+    // debug log
+    console.log("Current Transaction to Edit:", updatedTransaction);
 
-  // data input editing function
-  const editTransaction = (id) => {
-    const transactionToEdit = transactions.find(transaction => transaction.id === id);
-    setCurrentTransaction(transactionToEdit); 
-    setIsEditModalOpen(true);
-    // console.log(`Edit transaction with id: ${id}`);
-  };
-
-  // save edited transation from pop-up modal
-  const saveEditTransaction = (updatedTransaction) => {
-    // sends back edited transaction to backend via PUT req and updates the state
-    fetch(`/api/transactions/${currentTransaction.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedTransaction),
-    })
-      .then(response => response.json())
-      .then(savedTransaction => {
-        setTransactions(transactions.map(transaction => transaction.id === savedTransaction.id ? savedTransaction : transaction));
+    axios
+      .put(`${baseUrl}${endpoint.put}/${currentTransaction._id}`, updatedTransaction, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      })
+      .then((response) => {
+        setTransactions(
+          transactions.map((transaction) =>
+            transaction._id === response.data._id ? response.data : transactions
+          )
+        );
         setIsEditModalOpen(false);
       })
-      .catch(error => console.error('Error updating transaction:', error));
+      .catch((error) => console.error('Error updating transaction:', error));
   };
 
-  // delete function (prompt)
+  // delete transaction
   const deleteTransaction = (id) => {
-    if (window.confirm('Are you sure you want to delete this transaction?')) { 
-      fetch(`/api/transactions/${id}`, { 
-        method: 'DELETE', 
-      }) 
-        .then(() => { 
-          setTransactions(transactions.filter(transaction => transaction.id !== id));
-        }) 
-        .catch(error => console.error('Error deleting transaction:', error)); 
+    console.log("Deleting Transaction ID:", id); // debug log
+    
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
+      axios
+        .delete(`${baseUrl}${endpoint.delete}/${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        })
+        .then(() =>
+          setTransactions(transactions.filter((transaction) => transaction._id !== id))
+        )
+        .catch((error) => console.error('Error deleting transaction:', error));
     }
   };
 
   return (
     <TxnContainer>
-      {/* structure for transaction list */}
-      {transactions.map((transaction) => (
-        <TransactionItem key={transaction.id}>
+      {/* Conditional rendering: Show message if no transactions */}
+      {transactions.length === 0 ? (
+        <EmptyMessage>No transactions to display yet. Add your first transaction to see it here.</EmptyMessage>
+      ) : (
+        transactions.map((transaction) => (
+          <TransactionItem key={transaction._id}>
 
-          <TransactionDetails>
-            <TransactionHeader>
-              <StatusCircle isNew={Date.parse(transaction.date) > Date.now()} />
-              <p>{transaction.type}</p>
-            </TransactionHeader>
+            <TransactionDetails>
+              <TransactionHeader>
+                <StatusCircle isNew={Date.parse(transaction.date) > Date.now()} />
+                <p>{transaction.typeOf}</p>
+              </TransactionHeader>
 
-            <TransactionContent>
-              <p>${transaction.amount}</p>
-              <p style={{ display: 'flex', alignItems: 'center' }}>
-                <CalendarMonthIcon style={{ marginRight: '2px' }} /> 
-                {new Date(transaction.date).toLocaleDateString('en-US', { 
-                  month: '2-digit',
-                  day: '2-digit',
-                  year: 'numeric'
-                })}
-              </p>
-              <p style={{ display: 'flex', alignItems: 'center' }}>
-                <ChatBubbleOutlineIcon style={{ marginRight: '2px' }} /> 
-                {transaction.description}
-              </p>
+              <TransactionContent>
+                <p>${transaction.amount}</p>
+                <p style={{ display: 'flex', alignItems: 'center' }}>
+                  <CalendarMonthIcon style={{ marginRight: '2px' }} />
+                  {new Date(transaction.date).toLocaleDateString('en-US', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric'
+                  })}
+                </p>
+                <p style={{ display: 'flex', alignItems: 'center' }}>
+                  <ChatBubbleOutlineIcon style={{ marginRight: '2px' }} />
+                  {transaction.description}
+                </p>
 
-              <TransactionActions>
-                <IconButton onClick={() => editTransaction(transaction.id)} hoverColor="#3498db">
-                  <EditIcon />
-                </IconButton>
-                <IconButton onClick={() => deleteTransaction(transaction.id)} hoverColor="#e74c3c">
-                  <DeleteIcon />
-                </IconButton>
-              </TransactionActions>
-            </TransactionContent>
-          </TransactionDetails>
-        </TransactionItem>
-      ))}
-
+                <TransactionActions>
+                  <IconButton 
+                    onClick={() => {
+                      console.log("Editing Transaction:", transaction); // debug log
+                      setCurrentTransaction(transaction); 
+                      setIsEditModalOpen(true); // Open the modal
+                    }} 
+                    hoverColor="#3498db"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton onClick={() => deleteTransaction(transaction._id)} hoverColor="#e74c3c">
+                    <DeleteIcon />
+                  </IconButton>
+                </TransactionActions>
+              </TransactionContent>
+            </TransactionDetails>
+          </TransactionItem>
+        ))
+      )}
       {/* modal structure */}
       {isEditModalOpen && (
         <ModalOverlay>
           <ModalContent>
             <h3>Edit Transaction</h3>
             <Input
-              category={category}
               type="text"
               placeholder="Type"
-              value={currentTransaction.type}
-              onChange={(e) => setCurrentTransaction({ ...currentTransaction, type: e.target.value })}
+              value={currentTransaction.typeOf}
+              onChange={(e) => setCurrentTransaction({ ...currentTransaction, typeOf: e.target.value })}
             />
             <Input
-              category={category}
               type="text"
               placeholder="Description"
               value={currentTransaction.description}
               onChange={(e) => setCurrentTransaction({ ...currentTransaction, description: e.target.value })}
             />
             <Input
-              category={category}
               type="date"
               value={currentTransaction.date}
               onChange={(e) => setCurrentTransaction({ ...currentTransaction, date: e.target.value })}
             />
             <Input
-              category={category}
               type="number"
               placeholder="Amount"
               value={currentTransaction.amount}
               onChange={(e) => setCurrentTransaction({ ...currentTransaction, amount: e.target.value })}
             />
-            <Button onClick={() => saveEditTransaction(currentTransaction)}>Save</Button>
+            <Button onClick={() => editTransaction(currentTransaction)}>Save</Button>
             <Button onClick={() => setIsEditModalOpen(false)} style={{ backgroundColor: '#e74c3c', marginLeft: '10px' }}>Cancel</Button>
           </ModalContent>
         </ModalOverlay>

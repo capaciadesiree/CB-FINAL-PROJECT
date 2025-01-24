@@ -116,7 +116,9 @@ const FormComponent = ({ isSignup }) => {
         console.log('Form Data:', formData);
 
         // Send the form data to the server using a POST request
-        const response = await axios.post(endpoint, formData);
+        const response = await axios.post(endpoint, formData, {
+        withCredentials: true,
+      });
         console.log(response.data);
 
         // Navigate the user to the appropriate page after a successful submission:
