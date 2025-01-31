@@ -153,8 +153,8 @@ const TransactionList = ({ type }) => {
   // Map of endpoints for income and expense
   const endpoint = {
     get: type === 'income' ? '/get-income' : '/get-expense',
-    put: type === 'income' ? '/edit-income/_id' : '/edit-expense/_id',
-    delete: type === 'income' ? '/delete-income/_id' : '/delete-expense/_id',
+    put: type === 'income' ? '/edit-income' : '/edit-expense',
+    delete: type === 'income' ? '/delete-income' : '/delete-expense',
   };
 
   // Fetch transactions on component load
@@ -170,6 +170,7 @@ const TransactionList = ({ type }) => {
     // debug log
     console.log("Current Transaction to Edit:", updatedTransaction);
 
+    console.log("PUT URL:", `${baseUrl}${endpoint.put}/${currentTransaction._id}`);
     axios
       .put(`${baseUrl}${endpoint.put}/${currentTransaction._id}`, updatedTransaction, {
         headers: {
@@ -178,9 +179,12 @@ const TransactionList = ({ type }) => {
         withCredentials: true,
       })
       .then((response) => {
+        const response_data = response.data
+        const response_transaction_data = response_data.data
+        const response_transaction_id = response_transaction_data._id
         setTransactions(
-          transactions.map((transaction) =>
-            transaction._id === response.data._id ? response.data : transactions
+          transactions => transactions.map((transaction) =>
+            transaction._id === response_transaction_id ? response_transaction_data : transaction
           )
         );
         setIsEditModalOpen(false);
