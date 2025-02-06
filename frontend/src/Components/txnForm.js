@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { eventBus } from '../utils/eventBus';
 
 const FormContainer = styled.form`
   width: 100%;
@@ -51,18 +54,31 @@ const Button = styled.button`
   }
 `;
 
-const ConfirmationMessage = styled.div` 
-  margin-top: 10px; 
-  color: green; 
-`;
-
 const TxnForm = ({ title, buttonText, placeholder }) => {
   const [description, setDescription] = useState('');
   const [typeOf, setTypeOf] = useState('');
   const [date, setDate] = useState('');
   const [amount, setAmount] = useState('');
-  const [confirmationMessage, setconfirmationMessage] = useState('');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
   
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
+
+  const resetForm = () => {
+    setDescription('');
+    setTypeOf('');
+    setDate('');
+    setAmount('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted');
@@ -90,44 +106,70 @@ const TxnForm = ({ title, buttonText, placeholder }) => {
         withCredentials: true,
       });
       console.log('Transaction added:', response.data);
-      setconfirmationMessage('Transaction successfully added!');
+      
+      eventBus.emit('newEvent', true)
+      console.log('New event emitted');
+      setSnackbar({
+        open: true,
+        message: 'Transaction successfully added!',
+        severity: 'success'
+      });
+      resetForm(); // Clear the form after successful submission
     } catch (error) {
       console.error('Error adding transaction:', error);
-      setconfirmationMessage('Error adding transaction. Please try again.');
+      setSnackbar({
+        open: true,
+        message: 'Error adding transaction. Please try again.',
+        severity: 'error'
+      });
     }
   };
 
   return (
-    <FormContainer onSubmit={handleSubmit}>
-      <FormTitle>{title}</FormTitle>
-      <Input
-        type="text"
-        placeholder={placeholder}
-        value={typeOf}
-        onChange={(e) => setTypeOf(e.target.value)}
-      />
-      <Input
-        type="text"
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <Input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
-      <Input
-        type="number"
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <Button type="submit">{buttonText}</Button>
-      {confirmationMessage && 
-        <ConfirmationMessage> {confirmationMessage} </ConfirmationMessage>
-      }
-    </FormContainer>
+    <>
+      <FormContainer onSubmit={handleSubmit}>
+        <FormTitle>{title}</FormTitle>
+        <Input
+          type="text"
+          placeholder={placeholder}
+          value={typeOf}
+          onChange={(e) => setTypeOf(e.target.value)}
+        />
+        <Input
+          type="text"
+          placeholder="Description"
+          value={description}
+          maxLength={20}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <Input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        <Input
+          type="number"
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        <Button type="submit">{buttonText}</Button>
+      </FormContainer>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as Logo } from '../assets/logo.svg';
@@ -6,7 +6,7 @@ import { ReactComponent as LogoutIcon } from '../assets/logout.svg';
 import Dashboard from '../pages/dashboard';
 import AddTransaction from '../pages/addTransaction';
 import TransactionHistory from '../pages/transactionHistory';
-
+import ConfirmationDialog from './confirmationDialog';
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -96,14 +96,20 @@ const LogoutLink = styled.a`
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
-  // prompt message
-  const handleLogout = () => {
-    const confirmLogout = window.confirm('Are you sure you want to logout?');
-    if (confirmLogout) {
-      navigate('/login');
-    };
-  }
+  const handleLogoutClick = () => {
+    setLogoutDialogOpen(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    setLogoutDialogOpen(false);
+    navigate('/login');
+  };
+
+  const handleLogoutCancel = () => {
+    setLogoutDialogOpen(false);
+  };
 
   return (
     <SidebarContainer>
@@ -118,10 +124,19 @@ const Sidebar = () => {
       </NavbarContainer>
       
       <LogoutContainer>
-        <LogoutLink onClick={handleLogout}>
+        <LogoutLink onClick={handleLogoutClick}>
           <LogoutIcon /> Logout
         </LogoutLink>
       </LogoutContainer>
+
+      <ConfirmationDialog
+        open={logoutDialogOpen}
+        onClose={handleLogoutCancel}
+        onConfirm={handleLogoutConfirm}
+        title="Confirm Logout"
+        description="Are you sure you want to logout?"
+        confirmText="Logout"
+      />
 
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} />

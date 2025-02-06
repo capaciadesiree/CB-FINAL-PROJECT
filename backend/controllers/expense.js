@@ -7,7 +7,8 @@ exports.addExpense = async (req, res) => {
     typeOf,
     description,
     date,
-    amount
+    amount,
+    userId: req.user._id
   });
 
   try {
@@ -26,12 +27,12 @@ exports.addExpense = async (req, res) => {
       res.status(500).json({ message: 'SERVER ERROR' });
     
   }
-  console.log(expense);
+  // console.log(expense);
 };
 
 exports.getExpense = async (req, res) => {
   try {
-    const expense = await ExpenseSchema.find().sort({ createdAt: -1 }); // sorted by most recent
+    const expense = await ExpenseSchema.find({ userId: req.user._id }).sort({ createdAt: -1 }); // find user by userId & sorted by most recent
     res.setHeader('Content-Type', 'application/json'); // for json formatting
     res.status(200).json(expense);
   } catch (error) {
@@ -44,13 +45,13 @@ exports.editExpense = async (req, res) => {
   const { _id } = req.params;
   const updateData = req.body;
  
-  ExpenseSchema.findByIdAndUpdate(_id, updateData, { new: true }) // find and update ID with new data, and returns the update if true
+  ExpenseSchema.findOneAndUpdate({ _id, userId: req.user._id }, updateData, { new: true }) // find and update ID with new data, and returns the update if true
    .then((expense) => {
      if (!expense) {
        return res.status(404).json({ message: 'Expense not found' });
      }
      res.setHeader('Content-Type', 'application/json'); // for json formatting
-     res.status(200).json({ message: 'Expense Successfully Edited' });
+     res.status(200).json({ message: 'Expense Successfully Edited', data: expense });
    })
    .catch((err) => {
      res.setHeader('Content-Type', 'application/json'); // for json formatting
@@ -60,7 +61,7 @@ exports.editExpense = async (req, res) => {
 
 exports.deleteExpense = async (req, res) => {
  const { _id } = req.params;
- ExpenseSchema.findByIdAndDelete(_id) // find and delete ID
+ ExpenseSchema.findOneAndDelete({ _id, userId: req.user._id }) // find and delete by _id and userId
   .then((expense) => {
     res.setHeader('Content-Type', 'application/json'); // for json formatting
     res.status(200).json({ message: 'Expense Successfully Deleted' });

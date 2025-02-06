@@ -61,6 +61,7 @@ const TxnWrapper = styled.div`
   height: 42vh;
   padding: 20px;
   border-radius: 10px;
+  overflow-y: auto; // Add vertical scroll if content overflows
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
 `;

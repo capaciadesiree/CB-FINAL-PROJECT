@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { eventBus } from '../utils/eventBus';
+
 import PaidIcon from '@mui/icons-material/PaidOutlined';
 import AtmIcon from '@mui/icons-material/LocalAtmOutlined';
 import SavingsIcon from '@mui/icons-material/SavingsOutlined';
@@ -74,9 +76,16 @@ const SummaryBox = ({ layout = 'vertical', visibleBoxes = ['income', 'expenses',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [newTransaction, setNewTransaction] = useState(false); // State for listening to new transaction
 
   const baseUrl = 'http://localhost:4000/api';
 
+  // function to listen on new transactions from txnForm
+  const listener = useCallback((isNew) => {
+    console.log('Is new:', isNew);
+    setNewTransaction(isNew);
+  }, []);
+  
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -84,19 +93,25 @@ const SummaryBox = ({ layout = 'vertical', visibleBoxes = ['income', 'expenses',
 
       // Fetch both income and expenses in parallel
       const [incomeResponse, expensesResponse] = await Promise.all([
-        axios.get(`${baseUrl}/get-income`),
-        axios.get(`${baseUrl}/get-expense`)
+        axios.get(`${baseUrl}/get-income`, { withCredentials: true }),
+        axios.get(`${baseUrl}/get-expense`, { withCredentials: true })
       ]);
+      // console.log('Income Response:', incomeResponse.data);
+      // console.log('Expenses Response:', expensesResponse.data);
 
-      const income = parseFloat(incomeResponse.data.income || 0);
-      const expenses = parseFloat(expensesResponse.data.expenses || 0);
-      
+      const incomeData = incomeResponse.data;
+      const expenseData = expensesResponse.data
+
+      // Extract amounts and calculate total income and expenses
+      const totalIncome = incomeData.reduce((sum, txn) => sum + parseFloat(txn.amount || 0), 0);
+      const totalExpenses = expenseData.reduce((sum, txn) => sum + parseFloat(txn.amount || 0), 0);
+
       // Calculate savings
-      const savings = income - expenses;
+      const savings = totalIncome - totalExpenses;
 
       setSummaryData({
-        income,
-        expenses,
+        income: totalIncome,
+        expenses: totalExpenses,
         savings
       });
     } catch (error) {
@@ -107,15 +122,27 @@ const SummaryBox = ({ layout = 'vertical', visibleBoxes = ['income', 'expenses',
     }
   };
 
+  // useEffect for listener
+  useEffect(() => {
+    eventBus.on('newEvent', listener);
+    fetchData(); // initial fetch when component mounts or newTransaction changes
+
+    return () => {
+      eventBus.off('newEvent', listener); // cleanup properly
+      // setNewTransaction(false); 
+    };
+  }, [newTransaction]);
+
+  // useEffect for polling
   useEffect(() => {
     fetchData();
-    
+
     // set up polling to refresh data periodically
     const pollInterval = setInterval(fetchData, 300000); // Refresh every 5 minutes
-    
+
     return () => clearInterval(pollInterval);
   }, []);
-
+  
   const formatAmount = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

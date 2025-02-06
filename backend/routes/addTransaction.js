@@ -5,8 +5,8 @@ const { isAuthenticated } = require('../middlewares/auth');
 
 router.post('/add-income', isAuthenticated, addIncome)
     .get('/get-income', getIncome)
-    .put('/edit-income/:_id', editIncome)
-    .delete('/delete-income/:_id', deleteIncome)
+    .put('/edit-income/:_id', isAuthenticated, editIncome)
+    .delete('/delete-income/:_id', isAuthenticated, deleteIncome)
     
     .post('/add-expense', isAuthenticated, addExpense)
     .get('/get-expense', getExpense)

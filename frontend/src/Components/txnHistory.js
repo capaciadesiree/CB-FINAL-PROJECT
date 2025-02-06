@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-// import axios from 'axios';
+import axios from 'axios';
 
 const TxnHistoryContainer = styled.div`
   padding: 20px;
@@ -61,47 +61,68 @@ const TimeRangeContainer = styled.div`
   align-items: center;
 `;
 
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color:${({ theme }) => theme.subTextColor};
+`;
+
+const EmptyMessage = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color:${({ theme }) => theme.subTextColor};
+`;
+
 const TxnHistory = ({ theme }) => {
-  const [timeFilter, setTimeFilter] = useState('Recent'); // stores current time range (by recent or oldest)
-  const [apiTransactions, setApiTransactions] = useState([]); //state to store API transactions
+  const [timeFilter, setTimeFilter] = useState('Recent');
+  const [transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // sample data for testing
-  const sampleTransactions = [
-    { description: 'Salary', type: 'Designing', date: '09/15/2024', amount: '$850.00' },
-    { description: 'Freelance', type: 'Development', date: '09/14/2024', amount: '$500.00' },
-    { description: 'Consulting', type: 'Consulting', date: '09/13/2024', amount: '$300.00' },
-  ];
-/*
-  // function to fetch transaction history from API
-  const fetchTransactions = async () => {
-    try {
-      const response = await axios.get('replace_with_api_endpoint'); // replace with your API endpoint
-      setApiTransactions(response.data); // assuming the API response returns an array of transactions
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-    }
-  };
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      setIsLoading(true);
+      try {
+        const [incomeRes, expenseRes] = await Promise.all([
+          axios.get('http://localhost:4000/api/get-income', { withCredentials: true }),
+          axios.get('http://localhost:4000/api/get-expense', { withCredentials: true })
+        ]);
 
-  // useEffect to fetch transactions when the component mounts 
-  useEffect(() => { 
-    fetchTransactions(); 
+        const incomeTransactions = incomeRes.data.map(income => ({
+          description: income.description,
+          type: income.typeOf,
+          date: new Date(income.date).toLocaleDateString(),
+          amount: `$${income.amount.toFixed(2)}`,
+          transactionType: 'income'
+        }));
+
+        const expenseTransactions = expenseRes.data.map(expense => ({
+          description: expense.description,
+          type: expense.typeOf,
+          date: new Date(expense.date).toLocaleDateString(),
+          amount: `-$${expense.amount.toFixed(2)}`,
+          transactionType: 'expense'
+        }));
+
+        setTransactions([...incomeTransactions, ...expenseTransactions]);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+        setTransactions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTransactions();
   }, []);
-*/
 
-  // combined transactions (API transactions + sample transactions)
-  const allTransactions = [...apiTransactions, ...sampleTransactions];
+  const filteredTransactions = [...transactions].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return timeFilter === 'Recent' ? dateB - dateA : dateA - dateB;
+  });
 
-  // filters transactions based on timeFilter (recent or oldest)
-  const filteredTransactions = [...sampleTransactions].sort((a, b) => 
-    timeFilter === 'Recent' 
-      ? new Date(b.date) - new Date(a.date)
-      : new Date(a.date) - new Date(b.date)
-  );
-
-  // handles the changed in time range (filter by) dropdown
   const handleFilterChange = (event) => {
     setTimeFilter(event.target.value);
-
   };
 
   return (
@@ -109,40 +130,57 @@ const TxnHistory = ({ theme }) => {
       <FilterOptions>
         <ComponenHeader>Transaction History</ComponenHeader>
         
-        <TimeRangeContainer>
-          <FilterLabel htmlFor="timeFilter">Filtered by:</FilterLabel>
-
-          <FilterSelect
-            id="timeFilter"
-            value={timeFilter}
-            onChange={handleFilterChange} // call handleTimeFileChange on dropdown change
-          >
-            <option value="Recent">Recent</option>
-            <option value="Oldest">Oldest</option>
-          </FilterSelect>
-        </TimeRangeContainer>
+        {!isLoading && transactions.length > 0 && (
+          <TimeRangeContainer>
+            <FilterLabel htmlFor="timeFilter">Filtered by:</FilterLabel>
+            <FilterSelect
+              id="timeFilter"
+              value={timeFilter}
+              onChange={handleFilterChange}
+            >
+              <option value="Recent">Recent</option>
+              <option value="Oldest">Oldest</option>
+            </FilterSelect>
+          </TimeRangeContainer>
+        )}
       </FilterOptions>
-      
-      <Table>
-        <thead>
-          <tr>
-            <TableHeader>Description</TableHeader>
-            <TableHeader>Type</TableHeader>
-            <TableHeader>Date</TableHeader>
-            <TableHeader>Amount</TableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredTransactions.map((transaction, index) => (
-            <tr key={index}>
-              <TableCell>{transaction.description}</TableCell>
-              <TableCell>{transaction.type}</TableCell>
-              <TableCell>{transaction.date}</TableCell>
-              <TableCell>{transaction.amount}</TableCell>
+
+      {isLoading && (
+        <LoadingMessage>Loading transactions...</LoadingMessage>
+      )}
+
+      {!isLoading && transactions.length === 0 && (
+        <EmptyMessage>
+          No transactions to display yet. Add your first transaction to see it here.
+        </EmptyMessage>
+      )}
+
+      {!isLoading && transactions.length > 0 && (
+        <Table>
+          <thead>
+            <tr>
+              <TableHeader>Description</TableHeader>
+              <TableHeader>Type</TableHeader>
+              <TableHeader>Date</TableHeader>
+              <TableHeader>Amount</TableHeader>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {filteredTransactions.map((transaction, index) => (
+              <tr key={index}>
+                <TableCell>{transaction.description}</TableCell>
+                <TableCell>{transaction.type}</TableCell>
+                <TableCell>{transaction.date}</TableCell>
+                <TableCell style={{ 
+                  color: transaction.transactionType === 'income' ? '#2ecc71' : '#e74c3c'
+                }}>
+                  {transaction.amount}
+                </TableCell>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
     </TxnHistoryContainer>
   );
 };

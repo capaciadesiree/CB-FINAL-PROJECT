@@ -3,7 +3,7 @@ import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, Toolti
 import { Line } from 'react-chartjs-2';
 import styled, { useTheme } from 'styled-components';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
-// import axios from 'axios';
+import axios from 'axios';
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, CategoryScale);
 
@@ -73,143 +73,166 @@ const ChartContainer = styled.div`
   margin: 0 auto;
 `;
 
+const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 200px;
+
+  h3 {
+    margin-bottom: 1rem;
+    color: ${props => props.theme.textColor};
+  }
+
+  p {
+    color: ${props => props.theme.textColor};
+  }
+`;
+
 const LineChart = () => {
-  // state variables
-  const theme = useTheme(); // access theme from styled-components
-  const [dataType, setDataType] = useState('Income'); // stores current data type (income, expenses, savings)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // manages dropdown state (open/close)
-  const [timeRange, setTimeRange] = useState('6 Months'); // stores current time range (by month)
- 
-  // state to store API data
-  const [apiData, setApiData] = useState({ 
+  const theme = useTheme();
+  const chartRef = useRef(null);
+  
+  // State
+  const [dataType, setDataType] = useState('Income');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [timeRange, setTimeRange] = useState('6');  // Store as number of months
+  const [isLoading, setIsLoading] = useState(true);
+  const [chartData, setChartData] = useState({
     Income: { 
       labels: [], 
       data: [] 
-    }, 
+    },
     Expenses: { 
       labels: [], 
       data: [] 
-    }, 
+    },
     Savings: { 
       labels: [], 
       data: [] 
-    } 
-  }); 
-  /*
-  // state to store filtered data
-  const [filteredData, setFilteredData] = useState({ 
-    labels: [], 
-    data: [] 
-  }); 
-  */
-  
-  const chartRef = useRef(null);
-  const useSampleData = true; // toggle this to switch between sample to API data
+    }
+  });
 
-  // color map by dataType
+  // Colors
   const colorMapping = {
     Income: '#52A6D8',
     Expenses: '#FD7543',
     Savings: '#3DBBBF'
   };
 
-  /*
-  //funtion to fetch chart data from API
-  const fetchChartData = async () => {
-    try {
-      const response = await axios.get('replace_with_api_endpoint');
-      setApiData(response.data);
-    } catch (error) {
-      console.error('Error fetching chart data:', error);
-    }
-  };
-
-  // useEffect to fetch data when the component mounts
+  // Fetch data
   useEffect(() => {
-    if (!useSampleData) {
-      fetchChartData();
-    }
-  }, [useSampleData]);
-  */
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // Get both income and expense data
+        const [incomeRes, expenseRes] = await Promise.all([
+          axios.get('http://localhost:4000/api/get-income', { withCredentials: true }),
+          axios.get('http://localhost:4000/api/get-expense', { withCredentials: true })
+        ]);
 
-  // sample data for testing
-  const sampleData = {
-    Income: { 
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'], 
-      data: [3000, 4000, 3200, 4500, 4800, 5300]
-    }, 
-    Expenses: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'], 
-      data: [500, 1000, 400, 1000, 1100, 1400] 
-    },
+        // Process the data
+        const processedData = processTransactionData(incomeRes.data, expenseRes.data);
+        setChartData(processedData);
+      } catch (error) {
+        console.error('Error fetching chart data:', error);
+        // Set empty data on error
+        setChartData({
+          Income: { 
+            labels: [], 
+            data: [] 
+          },
+          Expenses: { 
+            labels: [], 
+            data: [] 
+          },
+          Savings: { 
+            labels: [], 
+            data: [] 
+          }
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    Savings: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'], 
-      data: [1500, 3000, 2500, 3500, 4000, 3200]
-    }
+    fetchData();
+  }, [timeRange]); // Refetch when timeRange changes
+
+  // Process transaction data into chart format
+  const processTransactionData = (incomeData, expenseData) => {
+    // Get date range
+    const monthsToShow = parseInt(timeRange);
+    const endDate = new Date();
+    const startDate = new Date(endDate);
+    startDate.setMonth(endDate.getMonth() - monthsToShow);
+
+    // Generate labels (by months)
+    const labels = Array.from({ length: monthsToShow }, (_, i) => {
+      const date = new Date(endDate);
+      date.setMonth(date.getMonth() - (monthsToShow - 1 - i));
+      return date.toLocaleString('default', { month: 'short' });
+    });
+
+    // Initialize monthly totals
+    const monthlyIncome = new Array(monthsToShow).fill(0);
+    const monthlyExpense = new Array(monthsToShow).fill(0);
+
+    // Process income
+    incomeData.forEach(income => {
+      const date = new Date(income.date);
+      const monthIndex = Math.floor((date - startDate) / (1000 * 60 * 60 * 24 * 30));
+      if (monthIndex >= 0 && monthIndex < monthsToShow) {
+        monthlyIncome[monthIndex] += income.amount;
+      }
+    });
+
+    // Process expenses
+    expenseData.forEach(expense => {
+      const date = new Date(expense.date);
+      const monthIndex = Math.floor((date - startDate) / (1000 * 60 * 60 * 24 * 30));
+      if (monthIndex >= 0 && monthIndex < monthsToShow) {
+        monthlyExpense[monthIndex] += expense.amount;
+      }
+    });
+
+    // Calculate savings
+    const monthlySavings = monthlyIncome.map((income, index) => 
+      income - monthlyExpense[index]
+    );
+
+    return {
+      Income: { labels, data: monthlyIncome },
+      Expenses: { labels, data: monthlyExpense },
+      Savings: { labels, data: monthlySavings }
+    };
   };
-  
-  // determine which data to use (API or sample)
-  const chartData = useSampleData ? sampleData[dataType] : apiData[dataType];
 
-  // function to filter data & labels based on time range
-  /*
-  const filterDataByTimeRange = (data) => {
-    let filteredLabels = []; 
-    let filteredData = [];
-
-    switch (timeRange) {
-      case '1 Month':
-        filteredLabels = data.labels.slice(-1);
-        filteredData = data.data.slice(-1);
-        break;
-      case '3 Months':
-        filteredLabels = data.labels.slice(-3);
-        filteredData = data.data.slice(-3);
-        break;
-      case '6 Months':
-      default:
-        filteredLabels = data.labels;
-        filteredData = data.data;
-        break;
-    }
-
-    return { labels: filteredLabels, data: filteredData };
-  };
-
-  useEffect(() => {
-    const updatedFilteredData = filterDataByTimeRange(chartData);
-    setFilteredData(updatedFilteredData);
-  }, [timeRange, dataType, chartData]);
-  */
-
-  // chart data & style
+  // Chart configuration
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'], // change to filteredData.labels 
-    datasets: [
-      {
-        label: dataType,
-        data: chartData.data,
-        fill: true,
-        backgroundColor: colorMapping[dataType],
-        borderColor: colorMapping[dataType],
-        pointBorderColor: colorMapping[dataType],
-        pointBackgroundColor: colorMapping[dataType],
-        tension: 0.3,
-        pointRadius: 2,
-        pointHoverRadius: 4,
-      },
-    ],
+    labels: chartData[dataType].labels,
+    datasets: [{
+      label: dataType,
+      data: chartData[dataType].data,
+      fill: true,
+      backgroundColor: colorMapping[dataType],
+      borderColor: colorMapping[dataType],
+      pointBorderColor: colorMapping[dataType],
+      pointBackgroundColor: colorMapping[dataType],
+      tension: 0.3,
+      pointRadius: 2,
+      pointHoverRadius: 4,
+    }],
   };
-  
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        display: false,
-      },
-      // appear when hovering over data points
+      legend: { display: false },
       tooltip: {
         enabled: true,
         backgroundColor: theme.componentBackground,
@@ -217,90 +240,86 @@ const LineChart = () => {
         borderColor: theme.borderColor,
         borderWidth: 0.2,
         bodyColor: theme.textColor,
-        font: {
-          size: 14,
-        },
+        font: { size: 14 },
+        callbacks: {
+          label: function(context) {
+            return `$${context.raw.toFixed(2)}`;
+          }
+        }
       },
     },
     scales: {
       x: {
-        grid: {
-          display: false,
-          color: theme.textColor,
-        },
-        // x-axis label
-        ticks: {
-          color: theme.textColor,
-          stepSize: 400
-        },
+        grid: { display: false },
+        ticks: { color: theme.textColor }
       },
-      y : {
+      y: {
         beginAtZero: true,
-        grid: {
-
-          color: theme.textColor,
-        },
-        // y-axis label
+        grid: { color: theme.textColor },
         ticks: {
           color: theme.textColor,
-          font: {
-            size: 14,
-          },
-        },
-      },
-    },
+          font: { size: 14 },
+          callback: function(value) {
+            return '$' + value;
+          }
+        }
+      }
+    }
   };
-  
-  // handles the change in data type from title dropdown
+
+  // Event handlers
   const handleDataTypeChange = (value) => {
     setDataType(value);
-    setIsDropdownOpen(false); // auto close after selection
+    setIsDropdownOpen(false);
   };
 
-  // handles dropdown open/close state of title
-  const handleTitleClick = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  // handles the changed in time range (filter by) dropdown
-  const handleFilterChange = (event) => {
+  const handleTimeRangeChange = (event) => {
     setTimeRange(event.target.value);
-    // Modify labels and data based on the selected time range
-    // Example: adjust data to show last 3 months or last month
   };
 
   return (
     <Container theme={theme}>
-      <TitleContainer>
-        <TitleDropdown onClick={handleTitleClick}>
-          {dataType} <ArrowDownIcon />
-        </TitleDropdown>
-        {isDropdownOpen && (
-          <DropdownMenu>
-            <option onClick={() => handleDataTypeChange('Income')}>Income</option>
-            <option onClick={() => handleDataTypeChange('Expenses')}>Expenses</option>
-            <option onClick={() => handleDataTypeChange('Savings')}>Savings</option>
-          </DropdownMenu>
-        )}
-        <TimeRangeContainer>
-          <TimeRangeLabel htmlFor="timeRangeSelect">Filtered by:</TimeRangeLabel>
+      {isLoading && (
+        <div>Loading chart data...</div>
+      )}
 
-          <TimeRangeSelect
-            id="TimeRangeSelect"
-            value={timeRange}
-            onChange={handleFilterChange} // call handleFilterChange on dropdown change
-          >
-            <option value="6 Months">Last 6 Months</option>
-            <option value="2 Months">Last 3 Months</option>
-            <option value="1 Month">Last 1 Month</option>
-          </TimeRangeSelect>
-        </TimeRangeContainer>
-      </TitleContainer>
+      {!isLoading && chartData[dataType].data.length === 0 && (
+        <EmptyState>
+          <h3>No {dataType.toLowerCase()} data available</h3>
+          <p>Add some transactions to see your {dataType.toLowerCase()} chart</p>
+        </EmptyState>
+      )}
 
-  
-      <ChartContainer>
-        <Line ref={chartRef} data={data} options={options} />
-      </ChartContainer>
+      {!isLoading && chartData[dataType].data.length > 0 && (
+        <>
+          <TitleContainer>
+            <TitleDropdown onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+              {dataType} <ArrowDownIcon />
+            </TitleDropdown>
+            {isDropdownOpen && (
+              <DropdownMenu>
+                <option onClick={() => handleDataTypeChange('Income')}>Income</option>
+                <option onClick={() => handleDataTypeChange('Expenses')}>Expenses</option>
+                <option onClick={() => handleDataTypeChange('Savings')}>Savings</option>
+              </DropdownMenu>
+            )}
+            <TimeRangeContainer>
+              <TimeRangeLabel>Filtered by:</TimeRangeLabel>
+              <TimeRangeSelect
+                value={timeRange}
+                onChange={handleTimeRangeChange}
+              >
+                <option value="6">Last 6 Months</option>
+                <option value="3">Last 3 Months</option>
+                {/* Removed: <option value="1">Last Month</option> */}
+              </TimeRangeSelect>
+            </TimeRangeContainer>
+          </TitleContainer>
+          <ChartContainer>
+            <Line ref={chartRef} data={data} options={options} />
+          </ChartContainer>
+        </>
+      )}
     </Container>
   );
 };

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import EditIcon from './editButton';
 import DeleteIcon from './deleteButton';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import ConfirmationDialog from './confirmationDialog';
+import { eventBus } from '../utils/eventBus';
 
 // txnList styles
 const TxnContainer = styled.div`
@@ -15,7 +17,7 @@ const TxnContainer = styled.div`
   padding: 20px;
   flex-direction: column;
   gap: 10px;
-  overflow-y: auto; // Add vertical scroll if content overflows (but border-radius not visible on this side, check other ways)
+  overflow-y: auto; // Add vertical scroll if content overflows
   position: relative;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -143,11 +145,18 @@ const EmptyMessage = styled.p`
 
 const TransactionList = ({ type }) => {
   const [transactions, setTransactions] = useState([]); // state for all transactions
-  console.log(`Fetching transactions for type: ${type}`); // debug log
+  // console.log(`Fetching transactions for type: ${type}`); // debug log
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // form modal for editing existing transactions
   const [currentTransaction, setCurrentTransaction] = useState(null); // State for editing a current transaction
+  const [newTransaction, setNewTransaction] = useState(false); // State for listening to new transaction
   
+  // state for dialog box
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    transactionId: null
+  });
+
   const baseUrl = 'http://localhost:4000/api';
 
   // Map of endpoints for income and expense
@@ -157,13 +166,31 @@ const TransactionList = ({ type }) => {
     delete: type === 'income' ? '/delete-income' : '/delete-expense',
   };
 
-  // Fetch transactions on component load
+  // function to listen on new transactions from txnForm
+  const listener = useCallback((isNew) => {
+    console.log('Is new:', isNew);
+    setNewTransaction(isNew);
+  }, []);
+
+  // API call to fetch transactions on component load
   useEffect(() => {
+    eventBus.on('newEvent', listener);
+
     axios
-      .get(`${baseUrl}${endpoint.get}`)
+      .get(`${baseUrl}${endpoint.get}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      })
       .then((response) => setTransactions(response.data))
       .catch((error) => console.error('Error fetching transactions:', error));
-  }, [type, endpoint.get]); // Refetch whenever the `type` prop or endpoint.get changes
+
+      return () => {
+       eventBus.off('newEvent', listener); // cleanup properly
+       setNewTransaction(false); 
+      };
+  }, [type, newTransaction]);
 
   // Edit a transaction
   const editTransaction = (updatedTransaction) => {
@@ -188,29 +215,44 @@ const TransactionList = ({ type }) => {
           )
         );
         setIsEditModalOpen(false);
+        eventBus.emit('newEvent', true)
       })
       .catch((error) => console.error('Error updating transaction:', error));
   };
 
-  // delete transaction
-  const deleteTransaction = (id) => {
-    console.log("Deleting Transaction ID:", id); // debug log
-    
-    if (window.confirm('Are you sure you want to delete this transaction?')) {
-      axios
-        .delete(`${baseUrl}${endpoint.delete}/${id}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
-        })
-        .then(() =>
-          setTransactions(transactions.filter((transaction) => transaction._id !== id))
-        )
-        .catch((error) => console.error('Error deleting transaction:', error));
-    }
+  // Modified delete transaction function
+  const handleDeleteClick = (id) => {
+    setDeleteDialog({
+      open: true,
+      transactionId: id
+    });
   };
 
+  const handleDeleteConfirm = () => {
+    const id = deleteDialog.transactionId; // Get the stored ID from state
+    axios
+      .delete(`${baseUrl}${endpoint.delete}/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      })
+      .then(() => {
+        // Remove deleted transaction from state
+        setTransactions(transactions.filter((transaction) => 
+          transaction._id !== id
+      ));
+        // reset and close dialog box
+        setDeleteDialog({ open: false, transactionId: null });
+        eventBus.emit('newEvent', true)
+      })
+      .catch((error) => console.error('Error deleting transaction:', error));
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialog({ open: false, transactionId: null });
+  };
+  
   return (
     <TxnContainer>
       {/* Conditional rendering: Show message if no transactions */}
@@ -252,7 +294,7 @@ const TransactionList = ({ type }) => {
                   >
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => deleteTransaction(transaction._id)} hoverColor="#e74c3c">
+                  <IconButton onClick={() => handleDeleteClick(transaction._id)} hoverColor="#e74c3c">
                     <DeleteIcon />
                   </IconButton>
                 </TransactionActions>
@@ -261,6 +303,7 @@ const TransactionList = ({ type }) => {
           </TransactionItem>
         ))
       )}
+
       {/* modal structure */}
       {isEditModalOpen && (
         <ModalOverlay>
@@ -277,6 +320,7 @@ const TransactionList = ({ type }) => {
               placeholder="Description"
               value={currentTransaction.description}
               onChange={(e) => setCurrentTransaction({ ...currentTransaction, description: e.target.value })}
+              maxLength={20}
             />
             <Input
               type="date"
@@ -294,6 +338,15 @@ const TransactionList = ({ type }) => {
           </ModalContent>
         </ModalOverlay>
       )}
+
+      <ConfirmationDialog
+        open={deleteDialog.open}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Confirm Delete"
+        description="Are you sure you want to delete this item?"
+        confirmText="Confirm Delete"
+      />
     </TxnContainer>
   );
 };
