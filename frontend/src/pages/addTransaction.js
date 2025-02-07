@@ -10,7 +10,7 @@ const AddTxnContainer = styled.div`
   display: grid;
   // grid-template-columns: 1fr 3fr 1fr;
   // grid-template-rows: auto 1fr auto;
-  grid-template-columns: 300px 530px 530px 0px;
+  grid-template-columns: 290px 530px 530px 0px;
   grid-template-rows: 80px 300px 340px 130px;
   height: 97vh;
   gap: 10px;

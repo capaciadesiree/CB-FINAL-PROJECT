@@ -7,14 +7,13 @@ require('dotenv').config();
 const db = require('./db/db');
 const { readdirSync } = require('fs');
 const app = express();
-// const authRoutes = require('./routes/auth');
 
 // middlewares
 app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:3000', // update to production domain url
   methods: 'GET, POST, PUT, DELETE',
   credentials: true,
 }));
@@ -27,7 +26,7 @@ app.use(session({
   cookie: { 
     secure: false, // set to true if using HTTPS
     httpOnly: false, // Temporarily set false for testing (change to true in production)
-    // sameSite: 'Lax', // Ensure cross-origin requests are allowed to send cookies
+    sameSite: 'Lax', // Ensure cross-origin requests are allowed to send cookies
   } 
 }));
 
@@ -36,18 +35,13 @@ app.use(passport.session());
 
 require('./config/passport');
 
-// Log session data for debugging
-app.use((req, res, next) => {
-  console.log('Session Data:', req.session);  // Log the session data
-  next();
-});
-
-// app.get('/', (req, res) => {
-//   res.send('Homepage')
-// });
-
-// auth routes & added middleware for user
-// app.use('/api', authRoutes);
+// Conditional logging for debugging
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, res, next) => {
+    console.log('Session Data:', req.session);
+    next();
+  });
+}
 
 // Dynamically load and use all route files from the 'routes' directory
 readdirSync('./routes').map((route) => app.use('/api', require('./routes/' + route )))

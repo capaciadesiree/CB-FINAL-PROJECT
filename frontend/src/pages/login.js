@@ -36,8 +36,9 @@ const LeftColumn = styled.div`
 const RightColumn = styled.div`
   flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
   background-image: url(${BackgroundImage});
   background-size: cover;
   background-position: center;
@@ -69,9 +70,7 @@ const Copyright = styled.p`
   color: white;
   font-weight: normal;
   font-size: 12px;
-  position: absolute;
-  bottom: -20px;
-  right: 10px;
+  margin: 10px;
 `;
 
 const Login = () => {
