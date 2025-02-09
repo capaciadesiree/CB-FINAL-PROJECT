@@ -7,6 +7,7 @@ require('dotenv').config();
 const db = require('./db/db');
 const { readdirSync } = require('fs');
 const app = express();
+const MongoStore = require('connect-mongo');
 
 // middlewares
 app.use(express.json());
@@ -23,6 +24,10 @@ app.use(session({
   secret: process.env.SECRET_KEY, 
   resave: false, 
   saveUninitialized: false,
+  store: MongoStore.create({ 
+    mongoUrl: process.env.MONGO_URL,
+    ttl: 24 * 60 * 60 // 24 hours
+  }),
   cookie: { 
     secure: true, // set to true if using HTTPS
     httpOnly: true, // Temporarily set false for testing (change to true in production)
@@ -32,6 +37,23 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Added error handlers for Passport
+passport.serializeUser((user, done) => {
+  console.log('Serializing user:', user._id);
+  done(null, user._id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    console.log('Deserializing user:', id);
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    console.error('Deserialize error:', error);
+    done(error);
+  }
+});
 
 require('./config/passport');
 
