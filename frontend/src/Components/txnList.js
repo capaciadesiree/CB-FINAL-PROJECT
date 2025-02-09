@@ -145,7 +145,6 @@ const EmptyMessage = styled.p`
 
 const TransactionList = ({ type }) => {
   const [transactions, setTransactions] = useState([]); // state for all transactions
-  // console.log(`Fetching transactions for type: ${type}`); // debug log
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // form modal for editing existing transactions
   const [currentTransaction, setCurrentTransaction] = useState(null); // State for editing a current transaction
@@ -168,7 +167,6 @@ const TransactionList = ({ type }) => {
 
   // function to listen on new transactions from txnForm
   const listener = useCallback((isNew) => {
-    console.log('Is new:', isNew);
     setNewTransaction(isNew);
   }, []);
 
@@ -194,10 +192,7 @@ const TransactionList = ({ type }) => {
 
   // Edit a transaction
   const editTransaction = (updatedTransaction) => {
-    // debug log
-    console.log("Current Transaction to Edit:", updatedTransaction);
 
-    console.log("PUT URL:", `${baseUrl}${endpoint.put}/${currentTransaction._id}`);
     axios
       .put(`${baseUrl}${endpoint.put}/${currentTransaction._id}`, updatedTransaction, {
         headers: {
@@ -286,7 +281,6 @@ const TransactionList = ({ type }) => {
                 <TransactionActions>
                   <IconButton 
                     onClick={() => {
-                      console.log("Editing Transaction:", transaction); // debug log
                       setCurrentTransaction(transaction); 
                       setIsEditModalOpen(true); // Open the modal
                     }} 

@@ -7,7 +7,6 @@ import { eventBus } from '../utils/eventBus';
 
 const FormContainer = styled.form`
   width: 100%;
-  // height: 50vh;
   max-width: 600px;
   padding: 20px;
   display: flex;
@@ -81,7 +80,6 @@ const TxnForm = ({ title, buttonText, placeholder }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted');
 
     const formData = {
       type: title.includes('income') ? 'income' : 'expense', // Set type based on form title
@@ -90,14 +88,10 @@ const TxnForm = ({ title, buttonText, placeholder }) => {
       date,
       amount
     };
-    // Debug log
-    console.log('Submitting data:', formData); // Debug form data
 
     try {
       const baseUrl = 'http://localhost:4000/api';
       const endpoint = formData.type === 'income' ? '/add-income' : '/add-expense';
-      // Debug log
-      console.log('Submitting to:', `${baseUrl}${endpoint}`, 'with data:', formData);
       
       const response = await axios.post(`${baseUrl}${endpoint}`, formData, {
         headers: {
@@ -105,10 +99,8 @@ const TxnForm = ({ title, buttonText, placeholder }) => {
         },
         withCredentials: true,
       });
-      console.log('Transaction added:', response.data);
       
       eventBus.emit('newEvent', true)
-      console.log('New event emitted');
       setSnackbar({
         open: true,
         message: 'Transaction successfully added!',

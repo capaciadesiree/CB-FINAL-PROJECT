@@ -27,13 +27,11 @@ exports.addIncome = async (req, res) => {
       res.status(500).json({ message: 'SERVER ERROR' });
     
   }
-  // console.log(income);
 };
 
 exports.getIncome = async (req, res) => {
   try {
     const income = await IncomeSchema.find({ userId: req.user._id }).sort({ createdAt: -1 }); // find user by userId & sorted by most recent
-    console.log('Found income records:', income.length); // Debug log
     res.setHeader('Content-Type', 'application/json'); // for json formatting
     res.status(200).json(income);
   } catch (error) {

@@ -194,7 +194,6 @@ const Header = ({ showGreeting }) => { // added prop in header to show greeting 
           </UserIconWrapper>
 
           <Name>{userName}</Name>
-          {/* need to add api to get User's username */}
         </UserProfile>
       </SubContainer>
     </HeaderContainer>

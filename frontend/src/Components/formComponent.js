@@ -112,14 +112,10 @@ const FormComponent = ({ isSignup }) => {
         // Determine the API endpoint to send data to, based on whether the user is signing up or logging in
         const endpoint = isSignup ? 'http://localhost:4000/api/signup' : 'http://localhost:4000/api/login';
 
-        // log to debug (400 Bad Request)
-        console.log('Form Data:', formData);
-
         // Send the form data to the server using a POST request
         const response = await axios.post(endpoint, formData, {
         withCredentials: true,
       });
-        console.log(response.data);
 
         // Navigate the user to the appropriate page after a successful submission:
         // - If signing up, redirect to the login page

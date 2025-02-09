@@ -58,7 +58,6 @@ const TxnListWrapper = styled.div`
   display: flex;
   height: 340px;
   margin-top: 5px;
-  // gap: 10px;
   justify-content: space-between;
   align-items: center;
 `;

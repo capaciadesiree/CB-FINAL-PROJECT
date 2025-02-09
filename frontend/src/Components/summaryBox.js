@@ -96,8 +96,6 @@ const SummaryBox = ({ layout = 'vertical', visibleBoxes = ['income', 'expenses',
         axios.get(`${baseUrl}/get-income`, { withCredentials: true }),
         axios.get(`${baseUrl}/get-expense`, { withCredentials: true })
       ]);
-      // console.log('Income Response:', incomeResponse.data);
-      // console.log('Expenses Response:', expensesResponse.data);
 
       const incomeData = incomeResponse.data;
       const expenseData = expensesResponse.data
@@ -129,20 +127,9 @@ const SummaryBox = ({ layout = 'vertical', visibleBoxes = ['income', 'expenses',
 
     return () => {
       eventBus.off('newEvent', listener); // cleanup properly
-      // setNewTransaction(false); 
     };
   }, [newTransaction]);
 
-  // useEffect for polling
-  useEffect(() => {
-    fetchData();
-
-    // set up polling to refresh data periodically
-    const pollInterval = setInterval(fetchData, 300000); // Refresh every 5 minutes
-
-    return () => clearInterval(pollInterval);
-  }, []);
-  
   const formatAmount = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

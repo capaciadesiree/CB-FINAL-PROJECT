@@ -37,8 +37,6 @@ const Table = styled.table`
 `;
 
 const TableHeader = styled.th`
-  // display: flex;
-  // align-content: flex-start;
   text-align: left;
   padding: 10px;
   color: ${({ theme }) => theme.subTextColor};

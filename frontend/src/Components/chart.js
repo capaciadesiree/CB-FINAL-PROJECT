@@ -311,7 +311,6 @@ const LineChart = () => {
               >
                 <option value="6">Last 6 Months</option>
                 <option value="3">Last 3 Months</option>
-                {/* Removed: <option value="1">Last Month</option> */}
               </TimeRangeSelect>
             </TimeRangeContainer>
           </TitleContainer>
