@@ -90,7 +90,7 @@ const TxnForm = ({ title, buttonText, placeholder }) => {
     };
 
     try {
-      const baseUrl = 'http://localhost:4000/api';
+      const baseUrl = `${process.env.REACT_APP_API_URL}`;
       const endpoint = formData.type === 'income' ? '/add-income' : '/add-expense';
       
       const response = await axios.post(`${baseUrl}${endpoint}`, formData, {
