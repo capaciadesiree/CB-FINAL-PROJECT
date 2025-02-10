@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.b1cec025.css",
+    "main.js": "/static/js/main.24874c34.js",
+    "static/media/signupBG.jpg": "/static/media/signupBG.dc7d7fc40287bc9eb65c.jpg",
+    "static/media/logo.svg": "/static/media/logo.b26c3f47f35aab60f6a3339c018300eb.svg",
+    "static/media/logoPlain.svg": "/static/media/logoPlain.56451aa55475b93e6caeec69836ebe15.svg",
+    "static/media/account.svg": "/static/media/account.ab6876cee55353adf43cb403a9aa6477.svg",
+    "static/media/lightMode.svg": "/static/media/lightMode.55c72330f4b3426842417bedbc6d292d.svg",
+    "static/media/darkMode.svg": "/static/media/darkMode.e4aa2397e9e8b73e9d15f13d4dd80dbd.svg",
+    "static/media/calendar_month.svg": "/static/media/calendar_month.cd5bf14e6d477deb1833e358f01509ab.svg",
+    "index.html": "/index.html",
+    "static/media/logout.svg": "/static/media/logout.40bb5c37587b3ae1cb36d004f0566797.svg",
+    "main.b1cec025.css.map": "/static/css/main.b1cec025.css.map",
+    "main.24874c34.js.map": "/static/js/main.24874c34.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b1cec025.css",
+    "static/js/main.24874c34.js"
+  ]
+}
