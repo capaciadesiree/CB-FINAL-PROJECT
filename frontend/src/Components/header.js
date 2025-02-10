@@ -141,7 +141,7 @@ const Header = ({ showGreeting }) => { // added prop in header to show greeting 
 
   const fetchUserName = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/user', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user`, {
         withCredentials: true,
       });
       return response.data.firstName;

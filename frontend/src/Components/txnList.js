@@ -156,7 +156,7 @@ const TransactionList = ({ type }) => {
     transactionId: null
   });
 
-  const baseUrl = 'http://localhost:4000/api';
+  const baseUrl = `${process.env.REACT_APP_API_URL}`;
 
   // Map of endpoints for income and expense
   const endpoint = {
