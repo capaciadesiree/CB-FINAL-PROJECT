@@ -14,7 +14,7 @@ app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000', // update to production domain url
+  origin: ['http://localhost:3000', 'https://mondit.netlify.app/'], // update to production domain url
   methods: 'GET, POST, PUT, DELETE',
   credentials: true,
 }));
