@@ -31,7 +31,7 @@ app.use(session({
   cookie: { 
     secure: true, // set to true if using HTTPS
     httpOnly: true, // Temporarily set false for testing (change to true in production)
-    sameSite: 'Lax', // Ensure cross-origin requests are allowed to send cookies
+    sameSite: 'none', // Ensure cross-origin requests are allowed to send cookies
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
     domain: '.railway.app' // Optional: might help with cross-domain issues
   } 
