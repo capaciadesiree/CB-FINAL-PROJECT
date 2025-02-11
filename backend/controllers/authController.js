@@ -78,7 +78,11 @@ exports.postLogin = (req, res, next) => {
 
         res.header('Access-Control-Allow-Credentials', 'true');
         res.header('Access-Control-Allow-Origin', 'https://mondit.netlify.app');
-        return res.status(200).json({ message: 'Login successful', user });
+        return res.status(200).json({ 
+          message: 'Login successful', 
+          user, 
+          sessionID: req.sessionID // added for debugging
+        });
       });
     });
   })(req, res, next);
@@ -95,6 +99,10 @@ exports.logout = (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
+  console.log('GET /user - Session:', req.session);
+  console.log('GET /user - Is Authenticated:', req.isAuthenticated());
+  console.log('GET /user - User:', req.user);
+  
   try {
     const userId = req.user && req.user.id;
     if (!userId) {

@@ -14,8 +14,8 @@ app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://mondit.netlify.app'], // update to production domain url
-  methods: 'GET, POST, PUT, DELETE',
+  origin: ['http://localhost:3000', 'https://mondit.netlify.app', 'https://cb-final-project-production.up.railway.app'], // production domain url
+  methods: ['GET, POST, PUT, DELETE'],
   credentials: true,
 }));
 
@@ -31,11 +31,19 @@ app.use(session({
   cookie: { 
     secure: true, // set to true if using HTTPS
     httpOnly: true, // Temporarily set false for testing (change to true in production)
-    sameSite: 'none', // Ensure cross-origin requests are allowed to send cookies
+    sameSite: 'None', // Ensure cross-origin requests are allowed to send cookies
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
-    domain: '.railway.app' // Optional: might help with cross-domain issues
-  } 
+  },
+  name: 'connect.sid' // set cookie name
 }));
+
+// test endpoint to verify session
+app.use((req, res, next) => {
+  console.log('Session ID:', req.sessionID);
+  console.log('Session:', req.session);
+  console.log('Is Authenticated:', req.isAuthenticated());
+  next();
+});
 
 app.use(passport.initialize());
 app.use(passport.session());
