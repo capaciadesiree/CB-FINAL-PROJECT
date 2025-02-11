@@ -33,7 +33,7 @@ app.use(session({
     httpOnly: true, // Temporarily set false for testing (change to true in production)
     sameSite: 'Lax', // Ensure cross-origin requests are allowed to send cookies
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
-    domain: '.netlify.app' // Optional: might help with cross-domain issues
+    domain: '.railway.app' // Optional: might help with cross-domain issues
   } 
 }));
 
