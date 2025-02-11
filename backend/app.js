@@ -14,7 +14,7 @@ app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://mondit.netlify.app/'], // update to production domain url
+  origin: ['http://localhost:3000', 'https://mondit.netlify.app'], // update to production domain url
   methods: 'GET, POST, PUT, DELETE',
   credentials: true,
 }));
@@ -32,6 +32,8 @@ app.use(session({
     secure: true, // set to true if using HTTPS
     httpOnly: true, // Temporarily set false for testing (change to true in production)
     sameSite: 'Lax', // Ensure cross-origin requests are allowed to send cookies
+    maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
+    domain: '.netlify.app' // Optional: might help with cross-domain issues
   } 
 }));
 

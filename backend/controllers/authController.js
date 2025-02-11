@@ -76,7 +76,8 @@ exports.postLogin = (req, res, next) => {
           return res.status(500).json({ message: 'SERVER ERROR', error: saveErr });
         }
 
-        res.setHeader('Test-Cookie', 'This-is-a-test');
+        res.header('Access-Control-Allow-Credentials', 'true');
+        res.header('Access-Control-Allow-Origin', 'https://mondit.netlify.app');
         return res.status(200).json({ message: 'Login successful', user });
       });
     });
