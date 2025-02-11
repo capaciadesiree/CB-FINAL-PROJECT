@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { ThemeProvider, useTheme } from './contexts/themeContext';
 import { lightTheme, darkTheme } from './utils/themes';
@@ -19,11 +19,14 @@ const ThemedApp = () => {
     <StyledThemeProvider theme={theme}>
         <GlobalStyle />
         <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-transaction" element={<AddTransaction />} />
           <Route path="/transaction-history" element={<TransactionHistory />} />
+          {/* Catch all unknown routes and redirect to login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
     </StyledThemeProvider>
   );
