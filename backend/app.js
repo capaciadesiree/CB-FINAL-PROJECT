@@ -14,8 +14,8 @@ app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://mondit.netlify.app', 'https://cb-final-project-production.up.railway.app'], // production domain url
-  methods: ['GET, POST, PUT, DELETE'],
+  origin: ['http://localhost:3000', 'https://mondit.netlify.app'], // production domain url
+  methods: 'GET, POST, PUT, DELETE',
   credentials: true,
 }));
 
