@@ -16,20 +16,20 @@ app.use(express.json());
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://mondit.netlify.app',
-    'https://cb-final-project-production.up.railway.app'
+    'https://mondit.netlify.app', // production domain url
+    'https://cb-final-project-production.up.railway.app' // production domain url
     ], 
   methods: 'GET, POST, PUT, DELETE',
   credentials: true
 }));
 
 // set up session management
-const isProduction = process.env.NODE_ENV === 'production';
+// const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
-  resave: false, 
-  saveUninitialized: false,
+  resave: true, // changed to "true" for debug
+  saveUninitialized: true, // changed to "true" for debug
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URL,
     ttl: 24 * 60 * 60 // 24 hours
@@ -37,7 +37,7 @@ app.use(session({
   cookie: { 
     secure: true, // Secure in production, false in development
     httpOnly: true, // Temporarily set false for testing (change to true in production)
-    sameSite: isProduction ? 'None' : 'Lax', // None for production, Lax for development
+    sameSite: 'None', // None for production, Lax for development
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
   },
   name: 'connect.sid' // set cookie name
