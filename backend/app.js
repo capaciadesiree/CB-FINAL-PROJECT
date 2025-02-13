@@ -20,7 +20,7 @@ app.use(cors({
 }));
 
 // set up session management
-const isProduction = process.env.NODE_ENV === 'production';
+// const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
@@ -31,7 +31,7 @@ app.use(session({
     ttl: 24 * 60 * 60 // 24 hours
   }),
   cookie: { 
-    secure: isProduction, // Only true in production
+    secure: process.env.NODE_ENV === "production", // Secure in production
     httpOnly: true, // Temporarily set false for testing (change to true in production)
     sameSite: isProduction ? 'None' : 'Lax', // None for production, Lax for development
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
