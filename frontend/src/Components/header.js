@@ -144,7 +144,7 @@ const Header = ({ showGreeting }) => { // added prop in header to show greeting 
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user`, {
         withCredentials: true,
       });
-      return response.data.firstName;
+      return response.data.first_name;
     } catch (error) {
       console.error('Error fetching user name:', error);
       return 'User'; // optional fallback

@@ -15,11 +15,11 @@ app.use(express.json());
 // CORS configuration
 app.use(cors({
   origin: [
-    'http://localhost:3000',
     'https://mondit.netlify.app', // production domain url
-    'https://cb-final-project-production.up.railway.app' // production domain url
+    'https://cb-final-project-production.up.railway.app', // production domain url
+    'http://localhost:3000'
     ], 
-  methods: 'GET, POST, PUT, DELETE',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
@@ -28,17 +28,12 @@ app.use(cors({
 
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
-  resave: true, // changed to "true" for debug
-  saveUninitialized: true, // changed to "true" for debug
+  resave: false, // changed to "true" for debug
+  saveUninitialized: false, // changed to "true" for debug
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URL,
     ttl: 24 * 60 * 60, // 24 hours
-    autoRemove: 'native',
-    mongoOptions: {
-      useUnifiedTopology: true
-    },
     dbName: 'sessions',
-    stringify: false,
   }),
   cookie: { 
     secure: true, // Secure in production, false in development
