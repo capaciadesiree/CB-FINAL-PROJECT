@@ -60,30 +60,21 @@ exports.getLogin = async (req, res) => {
 
 exports.postLogin = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      return res.status(500).json({ message: 'SERVER ERROR', error: err });
-    }
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
+    if (err) return res.status(500).json({ message: 'SERVER ERROR' });
+    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+
     req.logIn(user, (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'SERVER ERROR', error: err });
-      }
+      if (err) return res.status(500).json({ message: 'SERVER ERROR' });
 
-      req.session.save((saveErr) => {
-        if (saveErr) {
-          return res.status(500).json({ message: 'SERVER ERROR', error: saveErr });
-        }
+      // Set session data explicitly
+      req.session.user = user;
+      req.session.isAuthenticated = true;
 
-        /*
-        res.header('Access-Control-Allow-Credentials', 'true');
-        res.header('Access-Control-Allow-Origin', 'https://mondit.netlify.app');
-        */
+      req.session.save((err) => {
+        if (err) return res.status(500).json({ message: 'Session save error' });
         return res.status(200).json({ 
-          message: 'Login successful', 
-          user, 
-          sessionID: req.sessionID // added for debugging
+          message: 'Login successful',
+          sessionID: req.sessionID
         });
       });
     });

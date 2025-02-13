@@ -32,7 +32,13 @@ app.use(session({
   saveUninitialized: true, // changed to "true" for debug
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URL,
-    ttl: 24 * 60 * 60 // 24 hours
+    ttl: 24 * 60 * 60, // 24 hours
+    autoRemove: 'native',
+    mongoOptions: {
+      useUnifiedTopology: true
+    },
+    dbName: 'sessions',
+    stringify: false,
   }),
   cookie: { 
     secure: true, // Secure in production, false in development
