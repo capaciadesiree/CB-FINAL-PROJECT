@@ -14,7 +14,11 @@ app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://mondit.netlify.app'], // production domain url
+  origin: [
+    'http://localhost:3000',
+    'https://mondit.netlify.app',
+    'https://cb-final-project-production.up.railway.app'
+    ], 
   methods: 'GET, POST, PUT, DELETE',
   credentials: true
 }));
@@ -31,7 +35,7 @@ app.use(session({
     ttl: 24 * 60 * 60 // 24 hours
   }),
   cookie: { 
-    secure: isProduction, // Secure in production, false in development
+    secure: true, // Secure in production, false in development
     httpOnly: true, // Temporarily set false for testing (change to true in production)
     sameSite: isProduction ? 'None' : 'Lax', // None for production, Lax for development
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
