@@ -39,14 +39,14 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
 
 // serialization and deserialization for maintaining user sessions
 passport.serializeUser((user, done) => {
-  console.log('Serializing user ID:', user.id);
-  done(null, user.id);
+  console.log('Serializing user ID:', user._id);
+  done(null, user._id);
 });
 
-passport.deserializeUser(async (id, done) => {
-  console.log('Deserializing user ID:', id);
+passport.deserializeUser(async (_id, done) => {
+  console.log('Deserializing user ID:', _id);
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(_id);
     console.log('Deserialized user:', user);
     done(null, user);
   } catch (error) {

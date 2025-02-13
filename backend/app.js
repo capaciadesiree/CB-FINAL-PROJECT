@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors({
   origin: ['http://localhost:3000', 'https://mondit.netlify.app'], // production domain url
   methods: 'GET, POST, PUT, DELETE',
-  credentials: true,
+  credentials: true
 }));
 
 // set up session management
