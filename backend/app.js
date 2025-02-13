@@ -20,6 +20,8 @@ app.use(cors({
 }));
 
 // set up session management
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
   resave: false, 
@@ -29,13 +31,16 @@ app.use(session({
     ttl: 24 * 60 * 60 // 24 hours
   }),
   cookie: { 
-    secure: true, // set to true if using HTTPS
+    secure: isProduction, // Only true in production
     httpOnly: true, // Temporarily set false for testing (change to true in production)
-    sameSite: 'None', // Ensure cross-origin requests are allowed to send cookies
+    sameSite: isProduction ? 'None' : 'Lax', // None for production, Lax for development
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
   },
   name: 'connect.sid' // set cookie name
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // test endpoint to verify session
 app.use((req, res, next) => {
@@ -43,26 +48,6 @@ app.use((req, res, next) => {
   console.log('Session:', req.session);
   console.log('Is Authenticated:', req.isAuthenticated());
   next();
-});
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Added error handlers for Passport
-passport.serializeUser((user, done) => {
-  console.log('Serializing user:', user._id);
-  done(null, user._id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  try {
-    console.log('Deserializing user:', id);
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (error) {
-    console.error('Deserialize error:', error);
-    done(error);
-  }
 });
 
 require('./config/passport');
@@ -77,6 +62,15 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Dynamically load and use all route files from the 'routes' directory
 readdirSync('./routes').map((route) => app.use('/api', require('./routes/' + route )))
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Global error handler:', err);
+  res.status(500).json({ 
+    message: 'Internal Server Error', 
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+  });
+});
 
 // Initialize server and connect to database
 const PORT = process.env.PORT
