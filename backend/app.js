@@ -33,7 +33,7 @@ app.use(session({
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URL,
     ttl: 24 * 60 * 60, // 24 hours
-    dbName: 'sessions',
+    collectionName: 'sessions',
   }),
   cookie: { 
     secure: true, // Secure in production, false in development
