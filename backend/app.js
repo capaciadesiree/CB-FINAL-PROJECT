@@ -78,7 +78,7 @@ app.use((err, req, res, next) => {
 });
 
 // Initialize server and connect to database
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 4000;
 
 const server = () => {
   db();
