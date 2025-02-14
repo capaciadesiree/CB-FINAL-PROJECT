@@ -15,6 +15,7 @@ app.use(express.json());
 // CORS configuration
 app.use(cors({
   origin: [
+    'https://desiree-frontend.netlify.app',
     'https://mondit.netlify.app', // production domain url
     'https://cb-final-project-production.up.railway.app', // production domain url
     'http://localhost:3000'
