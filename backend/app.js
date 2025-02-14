@@ -21,7 +21,9 @@ app.use(cors({
     'http://localhost:3000'
     ], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['set-cookie']
 }));
 
 // set up session management
@@ -41,6 +43,7 @@ app.use(session({
     httpOnly: true, // Temporarily set false for testing (change to true in production)
     sameSite: 'None', // None for production, Lax for development
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
+    domain: 'https://cb-final-project-production.up.railway.app'
   },
   name: 'connect.sid' // set cookie name
 }));
