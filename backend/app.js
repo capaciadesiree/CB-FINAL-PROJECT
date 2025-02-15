@@ -14,17 +14,6 @@ const MongoStore = require('connect-mongo');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS configuration
-app.use(cors({
-  origin: ['https://desiree-frontend.netlify.app'], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
-
-// set up session management
-// const isProduction = process.env.NODE_ENV === 'production';
-
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
   resave: false, // changed to "true" for debug
@@ -47,6 +36,17 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// CORS configuration
+app.use(cors({
+  origin: ['https://desiree-frontend.netlify.app'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+// set up session management
+// const isProduction = process.env.NODE_ENV === 'production';
 
 // test endpoint to verify session
 app.use((req, res, next) => {
