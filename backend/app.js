@@ -23,9 +23,7 @@ app.use(session({
      ttl: 24 * 60 * 60,
     collectionName: 'sessions',
     autoRemove: 'native',
-    crypto: {
-      secret: process.env.SECRET_KEY
-    }
+    stringify: false
   
   }),
   cookie: {
@@ -33,8 +31,7 @@ app.use(session({
     httpOnly: true,
     sameSite: 'None',
     maxAge: 24 * 60 * 60 * 1000,
-    path: '/',
-    domain: '.railway.app'
+    
   },
   
 }));
