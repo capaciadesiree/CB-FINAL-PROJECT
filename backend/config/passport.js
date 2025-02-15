@@ -4,63 +4,44 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 // configure local strat
-passport.use(new LocalStrategy({ 
+assport.use(new LocalStrategy({ 
   usernameField: 'email',
-  passwordField: 'password',
-  passReqToCallback: true
-}, async (req, email, password, done) => {
+  passwordField: 'password'
+}, async (email, password, done) => {
   try {
-    console.log('Environment:', process.env.NODE_ENV);
-    console.log('Session:', req.session);
-    console.log('Attempting authentication for email:', email); // error logging
-
+    console.log('Attempting authentication for email:', email);
     const user = await User.findOne({ email });
-    console.log('Database query completed');
-
+    
     if (!user) {
-      console.log('No user found with this email:', email);
-      return done(null, false, { message: 'Incorrect email' });
+      console.log('No user found');
+      return done(null, false);
     }
 
-    console.log('User found, attempting password comparison');
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) {
-      console.log('Password mismatch for user:', email);
-      return done(null, false, { message: 'Incorrect password' });
+      console.log('Password mismatch');
+      return done(null, false);
     }
 
-    console.log('User authenticated successfully:', user.email);
+    console.log('User authenticated:', user);
     return done(null, user);
-
   } catch (error) {
-    console.error('Detailed authentication error:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
-    });
     return done(error);
   }
 }));
 
 // serialization and deserialization for maintaining user sessions
 passport.serializeUser((user, done) => {
-  console.log('Serializing user ID:', user._id);
-  done(null, user._id.toString());
+  const sessionUser = { 
+    _id: user._id,
+    email: user.email,
+    first_name: user.first_name
+  };
+  console.log('Serializing user:', sessionUser);
+  done(null, sessionUser);
 });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    console.log('Deserializing user:', id);
-    const user = await User.findById(id);
-    if (!user) {
-      console.log('No user found in deserialization');
-      return done(null, false);
-    }
-    console.log('User found during deserialization:', user);
-    done(null, user);
-  } catch (err) {
-    console.error('Deserialization error:', err);
-    done(err);
-  }
+passport.deserializeUser((sessionUser, done) => {
+  console.log('Deserializing user:', sessionUser);
+  done(null, sessionUser);
 });
