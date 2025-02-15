@@ -60,40 +60,43 @@ exports.getLogin = async (req, res) => {
 
 exports.postLogin = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      console.error('Login error:', err);
-      return res.status(500).json({ message: 'Server error' });
-    }
-    
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
+    if (err) return res.status(500).json({ message: 'Server error' });
+    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
-    req.logIn(user, async (err) => {
-      if (err) {
-        console.error('Login error:', err);
-        return res.status(500).json({ message: 'Login failed' });
-      }
+    req.logIn(user, (err) => {
+      if (err) return res.status(500).json({ message: 'Login failed' });
 
-      // Важно: дождемся сохранения сессии
-      await new Promise((resolve, reject) => {
-        req.session.save((err) => {
-          if (err) {
-            console.error('Session save error:', err);
-            reject(err);
-            return;
-          }
-          resolve();
-        });
-      });
+     
+      req.session.user = {
+        id: user._id,
+        email: user.email,
+        firstName: user.first_name
+      };
+      req.session.isAuthenticated = true;
 
-      res.status(200).json({
-        message: 'Login successful',
-        user: {
-          id: user._id,
-          email: user.email,
-          firstName: user.first_name
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).json({ message: 'Session save error' });
         }
+
+        
+        res.status(200)
+           .cookie('connect.sid', req.sessionID, {
+             httpOnly: true,
+             secure: true,
+             sameSite: 'None',
+             maxAge: 24 * 60 * 60 * 1000,
+             path: '/'
+           })
+           .json({
+             message: 'Login successful',
+             user: {
+               id: user._id,
+               email: user.email,
+               firstName: user.first_name
+             }
+           });
       });
     });
   })(req, res, next);
