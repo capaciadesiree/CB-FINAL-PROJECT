@@ -39,7 +39,7 @@ app.use(session({
     httpOnly: true,
     sameSite: 'None',
     maxAge: 24 * 60 * 60 * 1000,
-    path: '/
+    path: '/',
   
   },
   name: 'connect.sid' // set cookie name
