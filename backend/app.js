@@ -8,14 +8,15 @@ const db = require('./db/db');
 const { readdirSync } = require('fs');
 const app = express();
 const MongoStore = require('connect-mongo');
+const isProduction = process.env.NODE_ENV === 'production';
 
 // middlewares
 app.use(express.json());
 
 // CORS configuration
 app.use(cors({
-  origin: [
-    'https://desiree-frontend.netlify.app',
+  origin: isProduction ? [
+    'https://desiree-frontend.netlify.app'] : [
     'http://localhost:3000'
     ], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -29,17 +30,17 @@ app.use(cors({
 
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
-  resave: false, // changed to "true" for debug
-  saveUninitialized: false, // changed to "true" for debug
+  resave: true, // changed to "true" for debug
+  saveUninitialized: true, // changed to "true" for debug
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URL,
     ttl: 24 * 60 * 60, // 24 hours
     collectionName: 'sessions',
   }),
   cookie: { 
-    secure: true, // Secure in production, false in development
+    secure: isProduction, // Secure in production, false in development
     httpOnly: true, // Temporarily set false for testing (change to true in production)
-    sameSite: 'None', // None for production, Lax for development
+    sameSite: isProduction ? 'None' : 'Lax', // None for production, Lax for development
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
   
   },
