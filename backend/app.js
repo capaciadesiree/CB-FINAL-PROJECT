@@ -16,11 +16,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
-  resave: false, // changed to "true" for debug
-  saveUninitialized: false, // changed to "true" for debug
+  resave: true, // changed to "true" for debug
+  saveUninitialized: true, // changed to "true" for debug
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URL,
-    touchAfter: 24 * 3600, // 24 hours
+     ttl: 24 * 60 * 60,
+    collectionName: 'sessions',
+    autoRemove: 'native',
+    crypto: {
+      secret: process.env.SECRET_KEY
+    }
   
   }),
   cookie: {
@@ -29,9 +34,9 @@ app.use(session({
     sameSite: 'None',
     maxAge: 24 * 60 * 60 * 1000,
     path: '/',
-  
+    domain: '.railway.app'
   },
-  name: 'connect.sid' // set cookie name
+  
 }));
 
 app.use(passport.initialize());
@@ -39,10 +44,12 @@ app.use(passport.session());
 
 // CORS configuration
 app.use(cors({
-  origin: ['https://desiree-frontend.netlify.app'], 
+  origin: ['https://desiree-frontend.netlify.app'],
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  exposedHeaders: ['set-cookie']
+  
 }));
 
 // set up session management
