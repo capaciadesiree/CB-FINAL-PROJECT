@@ -59,57 +59,49 @@ exports.getLogin = async (req, res) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  passport.authenticate('local', async (err, user, info) => {
-    try {
-      if (err) {
-        console.log('Authentication error:', err);
-        return res.status(500).json({ message: 'Server error' });
-      }
-
-      if (!user) {
-        console.log('No user found');
-        return res.status(400).json({ message: 'Invalid credentials' });
-      }
-
-      
-      await new Promise((resolve, reject) => {
-        req.logIn(user, (err) => {
-          if (err) reject(err);
-          resolve();
-        });
-      });
-
-      
-      req.session.userId = user._id;
-      req.session.authenticated = true;
-
-      
-      await new Promise((resolve, reject) => {
-        req.session.save((err) => {
-          if (err) reject(err);
-          resolve();
-        });
-      });
-
-      console.log('After login:', {
-        sessionID: req.sessionID,
-        authenticated: req.isAuthenticated(),
-        session: req.session
-      });
-
-      res.status(200).json({
-        success: true,
-        user: {
-          id: user._id,
-          email: user.email,
-          firstName: user.first_name
-        }
-      });
-
-    } catch (error) {
-      console.error('Login process error:', error);
-      res.status(500).json({ message: 'Login failed' });
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      console.log('Auth error:', err);
+      return res.status(500).json({ message: 'Server error' });
     }
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    req.logIn(user, (err) => {
+      if (err) {
+        console.log('Login error:', err);
+        return res.status(500).json({ message: 'Login failed' });
+      }
+
+      const sessionUser = {
+        _id: user._id,
+        email: user.email,
+        first_name: user.first_name
+      };
+
+
+      req.session.user = sessionUser;
+      req.session.isAuthenticated = true;
+
+      console.log('Login successful:', {
+        sessionID: req.sessionID,
+        session: req.session,
+        user: sessionUser
+      });
+
+      req.session.save((err) => {
+        if (err) {
+          console.log('Session save error:', err);
+          return res.status(500).json({ message: 'Session save error' });
+        }
+        
+        res.status(200).json({
+          success: true,
+          user: sessionUser
+        });
+      });
+    });
   })(req, res, next);
 };
 
