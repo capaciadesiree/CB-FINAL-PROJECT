@@ -22,53 +22,52 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS configuration
+const sessionStore = MongoStore.create({
+  mongoUrl: process.env.MONGO_URL,
+  ttl: 24 * 60 * 60,
+  autoRemove: 'native'
+});
+
+// Session configuration
+app.use(session({
+  store: sessionStore,
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: false,
+  unset: 'destroy',
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None',
+    maxAge: 24 * 60 * 60 * 1000
+  },
+  name: 'connect.sid'
+}));
+
+// CORS после session
 app.use(cors({
   origin: 'https://desiree-frontend.netlify.app',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'], 
-  exposedHeaders: ['Set-Cookie']  
-  
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
-
-app.use(session({ 
-  secret: process.env.SECRET_KEY, 
-  resave: false, // changed to "true" for debug
-  saveUninitialized: false, // changed to "true" for debug
-  store: MongoStore.create({ 
-    mongoUrl: process.env.MONGO_URL,
-     ttl: 24 * 60 * 60,
-    collectionName: 'sessions',
-    stringify: false
-  
-  }),
-  cookie: {
-    secure: true,
-    httpOnly: true,
-    sameSite: 'None',
-    maxAge: 24 * 60 * 60 * 1000,
-    domain: '.railway.app' 
-  },
-   name: 'connect.sid'
-}));
+// Debug middleware
+app.use((req, res, next) => {
+  const sessionID = req.headers.cookie?.split('connect.sid=')[1]?.split(';')[0];
+  console.log('Debug:', {
+    receivedCookie: req.headers.cookie,
+    parsedSessionID: sessionID,
+    currentSessionID: req.sessionID,
+    hasSession: !!req.session,
+    isAuthenticated: req.isAuthenticated?.()
+  });
+  next();
+});
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-// CORS configuration
-app.use(cors({
-  origin: ['https://desiree-frontend.netlify.app'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['set-cookie']
-  
-}));
-
-// set up session management
-// const isProduction = process.env.NODE_ENV === 'production';
 
 // test endpoint to verify session
 app.use((req, res, next) => {
