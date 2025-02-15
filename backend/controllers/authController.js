@@ -67,25 +67,23 @@ exports.postLogin = (req, res, next) => {
     req.logIn(user, (err) => {
       if (err) return res.status(500).json({ message: 'Login failed' });
 
+      // Сохраняем в сессию
       req.session.user = {
         id: user._id,
         email: user.email
       };
 
+      // Сохраняем сессию
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
           return res.status(500).json({ message: 'Session save error' });
         }
 
-        // Явно устанавливаем cookie
-        res.cookie('connect.sid', req.sessionID, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'None',
-          path: '/',
-          maxAge: 24 * 60 * 60 * 1000,
-          domain: '.railway.app'
+        console.log('Login successful:', {
+          sessionID: req.sessionID,
+          session: req.session,
+          isAuth: req.isAuthenticated()
         });
 
         return res.status(200).json({
