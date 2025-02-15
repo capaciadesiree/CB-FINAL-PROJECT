@@ -59,8 +59,6 @@ exports.getLogin = async (req, res) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  console.log('Login attempt started');
-  
   passport.authenticate('local', (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({ message: 'Invalid credentials' });
@@ -69,27 +67,29 @@ exports.postLogin = (req, res, next) => {
     req.logIn(user, (err) => {
       if (err) return res.status(500).json({ message: 'Login failed' });
 
-      // Создаем сессию при первом логине
       req.session.user = {
         id: user._id,
         email: user.email
       };
 
-      console.log('Created session:', {
-        sessionId: req.sessionID,
-        cookie: req.session.cookie
-      });
-
-      // Сохраняем сессию
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
           return res.status(500).json({ message: 'Session save error' });
         }
 
+        // Явно устанавливаем cookie
+        res.cookie('connect.sid', req.sessionID, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'None',
+          path: '/',
+          maxAge: 24 * 60 * 60 * 1000,
+          domain: '.railway.app'
+        });
+
         return res.status(200).json({
           success: true,
-          sessionId: req.sessionID,
           user: {
             id: user._id,
             email: user.email
@@ -99,7 +99,6 @@ exports.postLogin = (req, res, next) => {
     });
   })(req, res, next);
 };
-
 
 exports.logout = (req, res) => {
  req.logout((err) => {
