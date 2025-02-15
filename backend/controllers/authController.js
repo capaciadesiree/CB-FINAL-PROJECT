@@ -62,18 +62,21 @@ exports.postLogin = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       console.error('Login error:', err);
-      return res.status(500).json({ message: 'SERVER ERROR' });
+      return res.status(500).json({ message: 'Server error' });
     }
+    
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    req.logIn(user, (err) => {
-      console.error('Login error:', err);
-      if (err) return res.status(500).json({ message: 'SERVER ERROR' });
-    }
+    req.logIn(user, async (err) => {
+      if (err) {
+        console.error('Login error:', err);
+        return res.status(500).json({ message: 'Login failed' });
+      }
 
-              await new Promise((resolve, reject) => {
+      // Важно: дождемся сохранения сессии
+      await new Promise((resolve, reject) => {
         req.session.save((err) => {
           if (err) {
             console.error('Session save error:', err);
@@ -83,11 +86,6 @@ exports.postLogin = (req, res, next) => {
           resolve();
         });
       });
-
-
-      // Set session data explicitly
-      //req.session.user = user;
-      //req.sessionconsole.error('Login error:', err);.isAuthenticated = true;
 
       res.status(200).json({
         message: 'Login successful',
@@ -100,6 +98,7 @@ exports.postLogin = (req, res, next) => {
     });
   })(req, res, next);
 };
+
 
 exports.logout = (req, res) => {
  req.logout((err) => {
