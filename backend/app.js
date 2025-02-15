@@ -35,13 +35,12 @@ app.use(cors({
 
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
-  resave: true, // changed to "true" for debug
-  saveUninitialized: true, // changed to "true" for debug
+  resave: false, // changed to "true" for debug
+  saveUninitialized: false, // changed to "true" for debug
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URL,
      ttl: 24 * 60 * 60,
     collectionName: 'sessions',
-    autoRemove: 'native',
     stringify: false
   
   }),
