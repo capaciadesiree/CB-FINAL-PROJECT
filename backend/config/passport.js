@@ -46,14 +46,18 @@ passport.use(new LocalStrategy({
 // serialization and deserialization for maintaining user sessions
 passport.serializeUser((user, done) => {
   console.log('Serializing user ID:', user._id);
-  done(null, user._id);
+  done(null, user._id.toString());
 });
 
 passport.deserializeUser(async (_id, done) => {
   console.log('Deserializing user ID:', _id);
   try {
+    console.log('Deserializing user ID:', _id);
     const user = await User.findById(_id);
     console.log('Deserialized user:', user);
+    if (!user) {
+      return done(null, false);
+    }
     done(null, user);
   } catch (error) {
     console.error('Error during deserialization:', error);
