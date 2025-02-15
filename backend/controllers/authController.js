@@ -60,22 +60,42 @@ exports.getLogin = async (req, res) => {
 
 exports.postLogin = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    if (err) return res.status(500).json({ message: 'SERVER ERROR' });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (err) {
+      console.error('Login error:', err);
+      return res.status(500).json({ message: 'SERVER ERROR' });
+    }
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
     req.logIn(user, (err) => {
+      console.error('Login error:', err);
       if (err) return res.status(500).json({ message: 'SERVER ERROR' });
+    }
+
+              await new Promise((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) {
+            console.error('Session save error:', err);
+            reject(err);
+            return;
+          }
+          resolve();
+        });
+      });
+
 
       // Set session data explicitly
-      req.session.user = user;
-      req.session.isAuthenticated = true;
+      //req.session.user = user;
+      //req.sessionconsole.error('Login error:', err);.isAuthenticated = true;
 
-      req.session.save((err) => {
-        if (err) return res.status(500).json({ message: 'Session save error' });
-        return res.status(200).json({ 
-          message: 'Login successful',
-          sessionID: req.sessionID
-        });
+      res.status(200).json({
+        message: 'Login successful',
+        user: {
+          id: user._id,
+          email: user.email,
+          firstName: user.first_name
+        }
       });
     });
   })(req, res, next);
