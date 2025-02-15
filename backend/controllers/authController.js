@@ -59,44 +59,52 @@ exports.getLogin = async (req, res) => {
 };
 
 exports.postLogin = (req, res, next) => {
+  console.log('Login attempt with:', req.body);
+
   passport.authenticate('local', (err, user, info) => {
-    if (err) return res.status(500).json({ message: 'Server error' });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    console.log('Passport authenticate result:', { err, user, info });
+
+    if (err) {
+      console.error('Login error:', err);
+      return res.status(500).json({ message: 'Server error' });
+    }
+    
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
     req.logIn(user, (err) => {
-      if (err) return res.status(500).json({ message: 'Login failed' });
+      if (err) {
+        console.error('Login error:', err);
+        return res.status(500).json({ message: 'Login failed' });
+      }
 
      
-      req.session.user = {
-        id: user._id,
-        email: user.email,
-        firstName: user.first_name
-      };
+      req.session.user = user;
       req.session.isAuthenticated = true;
 
+    
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
           return res.status(500).json({ message: 'Session save error' });
         }
 
-        
-        res.status(200)
-           .cookie('connect.sid', req.sessionID, {
-             httpOnly: true,
-             secure: true,
-             sameSite: 'None',
-             maxAge: 24 * 60 * 60 * 1000,
-             path: '/'
-           })
-           .json({
-             message: 'Login successful',
-             user: {
-               id: user._id,
-               email: user.email,
-               firstName: user.first_name
-             }
-           });
+        console.log('Login successful:', {
+          sessionID: req.sessionID,
+          session: req.session,
+          user: req.user,
+          isAuthenticated: req.isAuthenticated()
+        });
+
+        res.status(200).json({
+          message: 'Login successful',
+          user: {
+            id: user._id,
+            email: user.email,
+            firstName: user.first_name
+          }
+        });
       });
     });
   })(req, res, next);
