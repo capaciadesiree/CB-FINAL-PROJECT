@@ -10,6 +10,14 @@ const app = express();
 const MongoStore = require('connect-mongo');
 
 
+app.use((req, res, next) => {
+  console.log('---------------------');
+  console.log('Incoming request:', req.path);
+  console.log('Cookie from request:', req.headers.cookie);
+  console.log('Session ID:', req.sessionID);
+  next();
+});
+
 // middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
