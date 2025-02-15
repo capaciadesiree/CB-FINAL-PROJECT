@@ -27,8 +27,8 @@ app.use(cors({
   origin: 'https://desiree-frontend.netlify.app',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
- optionsSuccessStatus: 200 
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'], 
+  exposedHeaders: ['Set-Cookie']  
   
 }));
 
@@ -49,9 +49,9 @@ app.use(session({
     httpOnly: true,
     sameSite: 'None',
     maxAge: 24 * 60 * 60 * 1000,
-    
+    domain: '.railway.app' 
   },
-  
+   name: 'connect.sid'
 }));
 
 app.use(passport.initialize());
