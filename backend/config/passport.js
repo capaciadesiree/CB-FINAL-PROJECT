@@ -4,8 +4,14 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 // configure local strat
-passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+passport.use(new LocalStrategy({ 
+  usernameField: 'email',
+  passwordField: 'password',
+  passReqToCallback: true
+}, async (req, email, password, done) => {
   try {
+    console.log('Environment:', process.env.NODE_ENV);
+    console.log('Session:', req.session);
     console.log('Attempting authentication for email:', email); // error logging
 
     const user = await User.findOne({ email });
