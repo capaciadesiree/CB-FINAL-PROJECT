@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 // configure local strat
-assport.use(new LocalStrategy({ 
+passport.use(new LocalStrategy({ 
   usernameField: 'email',
   passwordField: 'password'
 }, async (email, password, done) => {
