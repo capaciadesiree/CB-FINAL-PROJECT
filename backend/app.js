@@ -21,8 +21,6 @@ app.use(cors({
     ], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['set-cookie']
 }));
 
 // set up session management
