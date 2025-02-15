@@ -143,6 +143,9 @@ const Header = ({ showGreeting }) => { // added prop in header to show greeting 
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/user`, {
         withCredentials: true,
+        headers: {
+    'Content-Type': 'application/json'
+  }
       });
       return response.data.first_name;
     } catch (error) {
