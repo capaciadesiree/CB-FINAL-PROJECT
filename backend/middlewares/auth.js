@@ -1,15 +1,16 @@
 exports.isAuthenticated = (req, res, next) => {
-  console.log('Auth check - Session:', req.session);
-  console.log('Auth check - User:', req.user);
-  console.log('Auth check - SessionID:', req.sessionID);
+  console.log('Checking auth:', {
+    sessionID: req.sessionID,
+    session: req.session,
+    user: req.user,
+    isAuthenticated: req.isAuthenticated()
+  });
 
-  if (!req.session || !req.session.user) {
-    console.log('No session or user');
+  if (!req.sessionID || !req.session) {
     return res.status(401).json({ message: 'No session' });
   }
 
-  if (!req.isAuthenticated()) {
-    console.log('Not authenticated');
+  if (!req.isAuthenticated() || !req.user) {
     return res.status(401).json({ message: 'Not authenticated' });
   }
 
