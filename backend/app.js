@@ -14,6 +14,17 @@ const MongoStore = require('connect-mongo');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS configuration
+app.use(cors({
+  origin: 'https://desiree-frontend.netlify.app',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+ optionsSuccessStatus: 200 
+  
+}));
+
+
 app.use(session({ 
   secret: process.env.SECRET_KEY, 
   resave: true, // changed to "true" for debug
