@@ -93,8 +93,8 @@ const SummaryBox = ({ layout = 'vertical', visibleBoxes = ['income', 'expenses',
 
       // Fetch both income and expenses in parallel
       const [incomeResponse, expensesResponse] = await Promise.all([
-        axios.get(`${baseUrl}/get-income`, { withCredentials: true }),
-        axios.get(`${baseUrl}/get-expense`, { withCredentials: true })
+        axios.get(`${baseUrl}/api/get-income`, { withCredentials: true }),
+        axios.get(`${baseUrl}/api/get-expense`, { withCredentials: true })
       ]);
 
       const incomeData = incomeResponse.data;
