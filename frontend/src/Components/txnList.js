@@ -160,9 +160,9 @@ const TransactionList = ({ type }) => {
 
   // Map of endpoints for income and expense
   const endpoint = {
-    get: type === 'income' ? '/get-income' : '/get-expense',
-    put: type === 'income' ? '/edit-income' : '/edit-expense',
-    delete: type === 'income' ? '/delete-income' : '/delete-expense',
+    get: type === 'income' ? '/api/get-income' : '/api/get-expense',
+    put: type === 'income' ? '/api/edit-income' : '/api/edit-expense',
+    delete: type === 'income' ? '/api/delete-income' : '/api/delete-expense',
   };
 
   // function to listen on new transactions from txnForm
