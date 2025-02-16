@@ -147,7 +147,7 @@ const Header = ({ showGreeting }) => { // added prop in header to show greeting 
     'Content-Type': 'application/json'
   }
       });
-      return response.data.first_name;
+      return response.data.firstName;
     } catch (error) {
       console.error('Error fetching user name:', error);
       return 'User'; // optional fallback
