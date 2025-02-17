@@ -9,18 +9,16 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
     console.log('Attempting authentication for email:', email); // error logging
 
     const user = await User.findOne({ email });
-    console.log('Database query completed');
 
     if (!user) {
-      console.log('No user found with this email:', email);
+      console.log('No user found');
       return done(null, false, { message: 'Incorrect email' });
     }
 
-    console.log('User found, attempting password comparison');
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      console.log('Password mismatch for user:', email);
+      console.log('Password mismatch');
       return done(null, false, { message: 'Incorrect password' });
     }
 
@@ -28,11 +26,6 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
     return done(null, user);
 
   } catch (error) {
-    console.error('Detailed authentication error:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
-    });
     return done(error);
   }
 }));

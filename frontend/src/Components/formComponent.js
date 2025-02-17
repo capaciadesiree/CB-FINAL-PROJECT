@@ -110,7 +110,7 @@ const FormComponent = ({ isSignup }) => {
       setErrors({});
       try {
         // Determine the API endpoint to send data to, based on whether the user is signing up or logging in
-        const endpoint = isSignup ? `${process.env.REACT_APP_API_URL}/signup` : `${process.env.REACT_APP_API_URL}/login`;
+        const endpoint = isSignup ? `${process.env.REACT_APP_API_URL}/api/signup` : `${process.env.REACT_APP_API_URL}/api/login`;
         // const endpoint = isSignup ? 'http://localhost:4000/api/signup' : 'http://localhost:4000/api/login'; // dev
 
         // Send the form data to the server using a POST request

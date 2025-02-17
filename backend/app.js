@@ -1,12 +1,13 @@
+const db = require('./db/db');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
 require('dotenv').config();
-const db = require('./db/db');
 const { readdirSync } = require('fs');
 const MongoStore = require('connect-mongo');
+
 const app = express();
 
 // middlewares
@@ -18,34 +19,34 @@ app.set('trust proxy', 1);
 
 // CORS configuration
 app.use(cors({
-  origin: 'https://mondit.netlify.app', // production domain url, 
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  origin: 'https://mondit.netlify.app',
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
-}));
+ }));
 
 // set up session management
-const sessionMiddleware = session({ 
-  secret: process.env.SECRET_KEY, 
-  resave: false, // changed to "true" for debug
-  saveUninitialized: false, // changed to "true" for debug
-  store: MongoStore.create({ 
+const sessionMiddleware = session({
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
-    ttl: 24 * 60 * 60, // 24 hours
+    ttl: 24 * 60 * 60,
     autoRemove: 'native',
     crypto: {
       secret: false
     }
   }),
-  cookie: { 
-    secure: true, // Secure in production, false in development
-    httpOnly: true, // Temporarily set false for testing (change to true in production)
-    sameSite: 'None', // None for production, Lax for development
-    maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None',
+    maxAge: 24 * 60 * 60 * 1000
   },
   rolling: true,
   proxy: true
-});
+ });
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());
@@ -63,7 +64,7 @@ app.use((req, res, next) => {
     isAuthenticated: req.isAuthenticated?.()
   });
   next();
-});
+ });
 
 require('./config/passport');
 
