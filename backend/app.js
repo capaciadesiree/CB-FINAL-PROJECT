@@ -14,61 +14,59 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // added
 
+// Trust proxy
+app.set('trust proxy', 1);
+
 // CORS configuration
 app.use(cors({
-  origin: [
-    'https://mondit.netlify.app', // production domain url
-    'https://cb-final-project-production.up.railway.app', // production domain url
-    'http://localhost:3000'
-    ], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+  origin: ['https://mondit.netlify.app', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+ }));
 
-// set up session management
-// const isProduction = process.env.NODE_ENV === 'production';
-
-app.use(session({ 
-  secret: process.env.SECRET_KEY, 
-  resave: false, // changed to "true" for debug
-  saveUninitialized: false, // changed to "true" for debug
-  store: MongoStore.create({ 
+// Session configuration
+const sessionMiddleware = session({
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
     ttl: 24 * 60 * 60, // 24 hours
-    collectionName: 'sessions',
+    autoRemove: 'native',
+    crypto: {
+      secret: false
+    }
   }),
-  cookie: { 
-    secure: true, // Secure in production, false in development
-    httpOnly: true, // Temporarily set false for testing (change to true in production)
-    sameSite: 'None', // None for production, Lax for development
-    maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None',
+    maxAge: 24 * 60 * 60 * 1000
   },
-  name: 'connect.sid' // set cookie name
-}));
+  rolling: true,
+  proxy: true
+});
 
-// app.use(sessionMiddleware);
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
 // test endpoint to verify session
 app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  console.log('Session:', req.session);
-  console.log('Is Authenticated:', req.isAuthenticated());
+  const sessionCookie = req.headers.cookie?.match(/connect\.sid=([^;]+)/)?.[1];
+  console.log('Session check:', {
+    cookieHeader: req.headers.cookie,
+    sessionCookie,
+    sessionID: req.sessionID,
+    hasSession: !!req.session,
+    sessionData: req.session,
+    isAuthenticated: req.isAuthenticated?.()
+  });
   next();
- });
+});
 
 require('./config/passport');
-
-/*
-// Conditional logging for debugging
-if (process.env.NODE_ENV !== 'production') {
-  app.use((req, res, next) => {
-    console.log('Session Data:', req.session);
-    next();
-  });
-};
-  */
 
 // Dynamically load and use all route files from the 'routes' directory
 readdirSync('./routes').map((route) => app.use('/api', require('./routes/' + route )))
@@ -94,3 +92,5 @@ const server = () => {
 };
 
 server();
+
+module.exports = app;
