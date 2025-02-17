@@ -6,34 +6,36 @@ const session = require('express-session');
 require('dotenv').config();
 const db = require('./db/db');
 const { readdirSync } = require('fs');
-const app = express();
 const MongoStore = require('connect-mongo');
+const app = express();
 
 // middlewares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // added
+
+// trust proxy
+app.set('trust proxy', 1);
 
 // CORS configuration
 app.use(cors({
-  origin: [
-    'https://mondit.netlify.app', // production domain url
-    'https://cb-final-project-production.up.railway.app', // production domain url
-    'http://localhost:3000'
-    ], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  origin: 'https://mondit.netlify.app', // production domain url, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // set up session management
-// const isProduction = process.env.NODE_ENV === 'production';
-
-app.use(session({ 
+const sessionMiddleware = session({ 
   secret: process.env.SECRET_KEY, 
   resave: false, // changed to "true" for debug
   saveUninitialized: false, // changed to "true" for debug
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URL,
     ttl: 24 * 60 * 60, // 24 hours
-    collectionName: 'sessions',
+    autoRemove: 'native',
+    crypto: {
+      secret: false
+    }
   }),
   cookie: { 
     secure: true, // Secure in production, false in development
@@ -41,29 +43,39 @@ app.use(session({
     sameSite: 'None', // None for production, Lax for development
     maxAge: 24 * 60 * 60 * 1000, // Add maxAge in milliseconds
   },
-  name: 'connect.sid' // set cookie name
-}));
+  rolling: true,
+  proxy: true
+});
 
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// test endpoint to verify session
+// Session debugging middleware
 app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  console.log('Session:', req.session);
-  console.log('Is Authenticated:', req.isAuthenticated());
+  const sessionCookie = req.headers.cookie?.match(/connect\.sid=([^;]+)/)?.[1];
+  console.log('Session check:', {
+    cookieHeader: req.headers.cookie,
+    sessionCookie,
+    sessionID: req.sessionID,
+    hasSession: !!req.session,
+    sessionData: req.session,
+    isAuthenticated: req.isAuthenticated?.()
+  });
   next();
 });
 
 require('./config/passport');
 
+/*
 // Conditional logging for debugging
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
     console.log('Session Data:', req.session);
     next();
   });
-}
+};
+  */
 
 // Dynamically load and use all route files from the 'routes' directory
 readdirSync('./routes').map((route) => app.use('/api', require('./routes/' + route )))
@@ -79,6 +91,7 @@ app.use((err, req, res, next) => {
 
 // Initialize server and connect to database
 const PORT = process.env.PORT || 4000;
+console.log("Railway Assigned PORT:", process.env.PORT);
 
 const server = () => {
   db();

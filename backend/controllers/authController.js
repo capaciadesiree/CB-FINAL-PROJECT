@@ -108,7 +108,7 @@ exports.getUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({ firstName: user.first_name });
+    res.json({ firstName: user.first_name, users: user });
   } catch (error) {
     return res.status(500).json({ message: 'SERVER ERROR' });
   }

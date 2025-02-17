@@ -19,7 +19,7 @@ const ThemedApp = () => {
     <StyledThemeProvider theme={theme}>
         <GlobalStyle />
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/signup" replace />} /> 
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />

@@ -83,6 +83,10 @@ const TxnHistory = ({ theme }) => {
         const [incomeRes, expenseRes] = await Promise.all([
           axios.get(`${process.env.REACT_APP_API_URL}/api/get-income`, { withCredentials: true }),
           axios.get(`${process.env.REACT_APP_API_URL}/api/get-expense`, { withCredentials: true })
+
+          // dev
+          // axios.get('http://localhost:4000/api/get-income', { withCredentials: true }), 
+          // axios.get('http://localhost:4000/api/get-expense', { withCredentials: true })
         ]);
 
         const incomeTransactions = incomeRes.data.map(income => ({

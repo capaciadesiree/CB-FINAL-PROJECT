@@ -91,6 +91,7 @@ const TxnForm = ({ title, buttonText, placeholder }) => {
 
     try {
       const baseUrl = `${process.env.REACT_APP_API_URL}`;
+      // const baseUrl = 'http://localhost:4000/api'; // dev
       const endpoint = formData.type === 'income' ? '/add-income' : '/add-expense';
       
       const response = await axios.post(`${baseUrl}${endpoint}`, formData, {

@@ -79,6 +79,7 @@ const SummaryBox = ({ layout = 'vertical', visibleBoxes = ['income', 'expenses',
   const [newTransaction, setNewTransaction] = useState(false); // State for listening to new transaction
 
   const baseUrl = `${process.env.REACT_APP_API_URL}`;
+  // const baseUrl = 'http://localhost:4000/api'; // dev
 
   // function to listen on new transactions from txnForm
   const listener = useCallback((isNew) => {
