@@ -47,7 +47,7 @@ const TxnFormWrapper = styled.div`
   grid-row: 2/3;
   display: flex;
   height: 300px;
-  width: 76vw;
+  // width: 76vw;
   gap: 10px;
   // justify-content: space-between;
   align-items: flex-start;
@@ -57,7 +57,7 @@ const TxnListWrapper = styled.div`
   grid-column: 2/6;
   grid-row: 3/4;
   display: flex;
-  width: 76vw;
+  // width: 76vw;
   // height: 340px;
   margin-top: 5px;
   // justify-content: space-between;
@@ -70,7 +70,7 @@ const SummaryWrapper = styled.div`
   grid-row: 4/4;
   margin-top: 5px;
   display: flex;
-  width: 76vw;
+  // width: 76vw;
   justify-content: space-between;
 `;
 

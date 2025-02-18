@@ -10,7 +10,7 @@ const TxnHistoryContainer = styled.div`
   display: grid;
   // grid-template-columns: 1fr 3fr 1fr;
   // grid-template-rows: auto 1fr auto;
-  grid-template-columns: 250px 680px;
+  grid-template-columns: 250px 760px;
   grid-template-rows: 80px 300px 305px;
   // height: 97vh;
   gap: 10px;

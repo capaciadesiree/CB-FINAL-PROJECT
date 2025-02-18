@@ -12,8 +12,8 @@ import { eventBus } from '../utils/eventBus';
 const TxnContainer = styled.div`
   display: flex;
   width: 100%;
+  max-width: 600px;
   height: 170px;
-  max-width: 395px;
   padding: 20px;
   flex-direction: column;
   gap: 10px;

@@ -11,7 +11,7 @@ const DashboardContainer = styled.div`
   display: grid;
   // grid-template-columns: 1fr 3fr 1fr;
   // grid-template-rows: auto 1fr auto;
-  grid-template-columns: 250px 670px 200px 0px;
+  grid-template-columns: 250px 730px 230px 0px;
   grid-template-rows: 120px 360px 210px;
   // height: 96vh;
   gap: 10px;
