@@ -9,7 +9,7 @@ import TransactionHistory from '../pages/transactionHistory';
 import ConfirmationDialog from './confirmationDialog';
 
 const SidebarContainer = styled.div`
-  width: 250px;
+  max-width: 200px;
   height: 90vh;
   display: flex;
   align-items: flex-start;

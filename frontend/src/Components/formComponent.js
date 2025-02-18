@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { isEmail } from 'validator';
+// import { isEmail } from 'validator';
 
 const FormGroup = styled.div`
   margin-bottom: 15px;
@@ -61,13 +61,36 @@ const FormComponent = ({ isSignup }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const allowedDomains = [
+    'gmail.com', 
+    'yahoo.com', 
+    'outlook.com', 
+    'hotmail.com'
+  ];
+
   // form validation
   const validate = () => {
     const errors = {};
 
     // email validation
-    if (!formData.email) errors.email = 'Email is required';
-    if (!isEmail(formData.email)) errors.email = 'Invalid email format';
+    // Check if email is entered
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else {
+      const emailParts = formData.email.split('@');
+      
+      // Ensure email has a valid format
+      if (emailParts.length !== 2 || !emailParts[1].includes('.')) {
+        errors.email = 'Invalid email format';
+      } else {
+        const emailDomain = emailParts[1];
+        
+        // Allow only public emails or company emails (must contain a dot)
+        if (!allowedDomains.includes(emailDomain) && !emailDomain.includes('.')) {
+          errors.email = 'Only common email providers or company emails are allowed';
+        }
+      }
+    }
 
     // password validation
     if (!formData.password) {
@@ -105,13 +128,18 @@ const FormComponent = ({ isSignup }) => {
     // If there are validation errors, set them in the state to display to the user
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      return; // Stop form submission if there are errors
     } else {
       // If there are no validation errors, clear the previous errors
       setErrors({});
       try {
         // Determine the API endpoint to send data to, based on whether the user is signing up or logging in
-        const endpoint = isSignup ? `${process.env.REACT_APP_API_URL}/api/signup` : `${process.env.REACT_APP_API_URL}/api/login`;
-        // const endpoint = isSignup ? 'http://localhost:4000/api/signup' : 'http://localhost:4000/api/login'; // dev
+        const endpoint = isSignup 
+        ? `${process.env.REACT_APP_API_URL}/api/signup` 
+        : `${process.env.REACT_APP_API_URL}/api/login`;
+
+        // dev enpoints
+        // const endpoint = isSignup ? 'http://localhost:4000/api/signup' : 'http://localhost:4000/api/login';
 
         // Send the form data to the server using a POST request
         const response = await axios.post(endpoint, formData, {

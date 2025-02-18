@@ -7,7 +7,7 @@ import { eventBus } from '../utils/eventBus';
 
 const FormContainer = styled.form`
   width: 100%;
-  max-width: 600px;
+  max-width: 395px;
   padding: 20px;
   display: flex;
   flex-direction: column;

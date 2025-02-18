@@ -15,7 +15,7 @@ const HeaderContainer = styled.header`
   align-items: center;
   max-height: 80px;
   padding: 20px;
-  gap: 400px;
+  gap: 150px;
 `;
 
 const SubContainer = styled.div`

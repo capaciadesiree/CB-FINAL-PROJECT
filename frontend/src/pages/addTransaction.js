@@ -10,9 +10,9 @@ const AddTxnContainer = styled.div`
   display: grid;
   // grid-template-columns: 1fr 3fr 1fr;
   // grid-template-rows: auto 1fr auto;
-  grid-template-columns: 290px 530px 530px 0px;
-  grid-template-rows: 80px 300px 340px 130px;
-  height: 97vh;
+  grid-template-columns: 250px 670px 180px 0px;
+  grid-template-rows: 80px 300px 210px 0px;
+  height: 96vh;
   gap: 10px;
   padding: 10px;
   background-color: ${({ theme }) => theme.dashboardBackground};
@@ -23,7 +23,7 @@ const SidebarWrapper = styled.div`
   grid-column: 1/2;
   grid-row: 1/4;
   padding: 20px;
-  height: 840px;
+  height: 92vh;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
@@ -47,8 +47,9 @@ const TxnFormWrapper = styled.div`
   grid-row: 2/3;
   display: flex;
   height: 300px;
+  width: 76vw;
   gap: 10px;
-  justify-content: space-between;
+  // justify-content: space-between;
   align-items: flex-start;
 `;
 
@@ -56,10 +57,12 @@ const TxnListWrapper = styled.div`
   grid-column: 2/6;
   grid-row: 3/4;
   display: flex;
-  height: 340px;
+  width: 76vw;
+  // height: 340px;
   margin-top: 5px;
-  justify-content: space-between;
-  align-items: center;
+  // justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
 `;
 
 const SummaryWrapper = styled.div`
@@ -67,6 +70,7 @@ const SummaryWrapper = styled.div`
   grid-row: 4/4;
   margin-top: 5px;
   display: flex;
+  width: 76vw;
   justify-content: space-between;
 `;
 

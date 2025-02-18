@@ -8,11 +8,11 @@ import Chart from '../Components/chart';
 
 const TxnHistoryContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
-  grid-template-rows: auto 1fr auto;
-  // grid-template-columns: 300px 870px;
-  // grid-template-rows: 80px 360px 360px;
-  height: 97vh;
+  // grid-template-columns: 1fr 3fr 1fr;
+  // grid-template-rows: auto 1fr auto;
+  grid-template-columns: 250px 680px;
+  grid-template-rows: 80px 300px 305px;
+  // height: 97vh;
   gap: 10px;
   padding: 10px;
   background-color: ${({ theme }) => theme.dashboardBackground};
@@ -24,7 +24,7 @@ const SidebarWrapper = styled.div`
   grid-column: 1/2;
   grid-row: 1/4;
   padding: 20px;
-  height: 840px;
+  height: 92vh;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
@@ -47,7 +47,7 @@ const ChartWrapper = styled.div`
   grid-column: 2/2;
   grid-row: 2/3;
   width: 123%;
-  height: 36vh;
+  // height: 36vh;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

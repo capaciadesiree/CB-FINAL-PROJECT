@@ -11,9 +11,9 @@ import { eventBus } from '../utils/eventBus';
 // txnList styles
 const TxnContainer = styled.div`
   display: flex;
-  width: 510px;
-  height: 300px;
-  max-width: 600px;
+  width: 100%;
+  height: 170px;
+  max-width: 395px;
   padding: 20px;
   flex-direction: column;
   gap: 10px;
