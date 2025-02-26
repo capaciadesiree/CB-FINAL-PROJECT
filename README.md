@@ -34,23 +34,23 @@ A **full-stack finance tracker** that helps users manage their income and expens
 
 ### 1️⃣ Sign-up & Login page
 
-![image.png](https://imgur.com/6Rt1HxG)
+![Dashboard Preview](https://imgur.com/6Rt1HxG)
 
-![image.png](https://imgur.com/byuwA8Y)
+![Dashboard Preview](https://imgur.com/byuwA8Y)
 
 ### 2️⃣ Dashboard
 
-![image.png](https://imgur.com/NoeVuQC)
+![Dashboard Preview](https://imgur.com/NoeVuQC)
 
 ### 3️⃣ Add Transaction
 
-![image.png](https://imgur.com/95AjpBb)
+![Dashboard Preview](https://imgur.com/95AjpBb)
 
-![image.png](https://imgur.com/Oa0xltj)
+![Dashboard Preview](https://imgur.com/Oa0xltj)
 
 ### 4️⃣ Transaction History
 
-![image.png](https://imgur.com/MmEKXIy)
+![Dashboard Preview](https://imgur.com/MmEKXIy)
 
 ---
 
@@ -138,19 +138,12 @@ npm start
 
 🚨 *These endpoints are used internally by the app and require authentication.*
 
-| Method | Endpoint | Description | Authentication |
-| --- | --- | --- | --- |
-| `POST` | `/api/signup`
-`/api/login`
-`/api/add-income
- /api/add-expense` | Add a new transaction | ✅ Yes |
-| `GET` | `/api/user`
-`/api/get-income
- /api/get-expense` | Get all transactions | ✅ Yes |
-| `PUT` | `/api/edit-income/:_id`
-`/api/edit-expense/:_id` | Update a transaction | ✅ Yes |
-| `DELETE` | `/api/delete-income/:_id`
-`/api/delete-expense/:_id` | Delete a transaction | ✅ Yes |
+| Method   | Endpoint  | Description           | Authentication |
+|----------|----------|----------------------|---------------|
+| `POST`   | `/api/signup` <br> `/api/login` <br> `/api/add-income` <br> `/api/add-expense`  | Add a new transaction  | ✅ Yes |
+| `GET`    | `/api/user` <br> `/api/get-income` <br> `/api/get-expense`  | Get all transactions | ✅ Yes |
+| `PUT`    | `/api/edit-income/:_id` <br> `/api/edit-expense/:_id` | Update a transaction | ✅ Yes |
+| `DELETE` | `/api/delete-income/:_id` <br> `/api/delete-expense/:_id` | Delete a transaction | ✅ Yes |
 
 🔒 **All endpoints require authentication via session-based login with Passport.js.** Unauthorized requests will be rejected.
 
