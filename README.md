@@ -34,23 +34,23 @@ A **full-stack finance tracker** that helps users manage their income and expens
 
 ### 1️⃣ Sign-up & Login page
 
-![image.png](attachment:ec760acd-759c-4fb7-8ea8-8c69ca157236:image.png)
+![image.png](https://imgur.com/6Rt1HxG)
 
-![image.png](attachment:09b72348-4ca0-4305-8a9a-fae9679dddaa:image.png)
+![image.png](https://imgur.com/byuwA8Y)
 
 ### 2️⃣ Dashboard
 
-![image.png](attachment:c14e1eed-63f1-4bfe-ba64-b04cc9654404:image.png)
+![image.png](https://imgur.com/NoeVuQC)
 
 ### 3️⃣ Add Transaction
 
-![image.png](attachment:ef866564-be1d-460d-823d-7506dbbe5d67:image.png)
+![image.png](https://imgur.com/95AjpBb)
 
-![image.png](attachment:faaf9b45-1693-4d4c-b0dd-140fbc88e8b0:image.png)
+![image.png](https://imgur.com/Oa0xltj)
 
 ### 4️⃣ Transaction History
 
-![image.png](attachment:7abd5a73-7949-4422-b0ab-b0357f02bfb6:image.png)
+![image.png](https://imgur.com/MmEKXIy)
 
 ---
 
