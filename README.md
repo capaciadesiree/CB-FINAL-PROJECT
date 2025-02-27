@@ -1,4 +1,4 @@
-### 📌 Mondit - Finance Tracker App
+# 📌 Mondit - Finance Tracker App
 
 A **full-stack finance tracker** that helps users manage their income and expenses efficiently. Built with **MERN Stack** and **Passport.js** for authentication.
 
@@ -149,9 +149,9 @@ npm start
 
 ## 🎯 **Future Enhancements**
 
-🔹 Advanced filtering (by category, amount, tags)
-🔹 Export transactions to CSV/PDF
-🔹 Active status on transaction list
+- Advanced filtering (by category, amount, tags)
+- Export transactions to CSV/PDF
+- Active status on transaction list
 
 ---
 
