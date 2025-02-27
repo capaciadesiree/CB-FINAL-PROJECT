@@ -8,15 +8,13 @@ A **full-stack finance tracker** that helps users manage their income and expens
 
 ✅ Add, edit, and delete transactions in real-time
 
-✅ Dashboard with **charts,** **transaction history** and **total summary boxes**
+✅ Image with **charts,** **transaction history** and **total summary boxes**
 
 ✅ **Automated calculations** for total income, total expenses, and remaining savings
 
 ✅ Transaction filtering by **date and category**
 
-✅ Optimized for **desktop and web browsers**
-
-✅ **User-friendly UI** for web browsers
+✅ **Optimized and User-friendly UI** for **web browsers**
 
 ✅ **Light / Dark mode** interface
 
@@ -34,23 +32,23 @@ A **full-stack finance tracker** that helps users manage their income and expens
 
 ### 1️⃣ Sign-up & Login page
 
-![Dashboard Preview](https://imgur.com/6Rt1HxG)
+![Image Preview](https://i.imgur.com/6Rt1HxG.png)
 
-![Dashboard Preview](https://imgur.com/byuwA8Y)
+![Image Preview](https://imgur.com/byuwA8Y.png)
 
 ### 2️⃣ Dashboard
 
-![Dashboard Preview](https://imgur.com/NoeVuQC)
+![Image Preview](https://imgur.com/NoeVuQC.png)
 
 ### 3️⃣ Add Transaction
 
-![Dashboard Preview](https://imgur.com/95AjpBb)
+![Image Preview](https://imgur.com/95AjpBb.png)
 
-![Dashboard Preview](https://imgur.com/Oa0xltj)
+![Image Preview](https://imgur.com/Oa0xltj.png)
 
 ### 4️⃣ Transaction History
 
-![Dashboard Preview](https://imgur.com/MmEKXIy)
+![Image Preview](https://imgur.com/MmEKXIy.png)
 
 ---
 
@@ -130,7 +128,7 @@ npm start
 
 3️⃣ View summary in the **dashboard**
 
-4️⃣ Edit or delete transactions in **TxnList** (Transaction List) ****component
+4️⃣ Edit or delete transactions in **TxnList** (Transaction List) component
 
 ---
 
@@ -140,10 +138,10 @@ npm start
 
 | Method   | Endpoint  | Description           | Authentication |
 |----------|----------|----------------------|---------------|
-| `POST`   | `/api/signup` <br> `/api/login` <br> `/api/add-income` <br> `/api/add-expense`  | Add a new transaction  | ✅ Yes |
-| `GET`    | `/api/user` <br> `/api/get-income` <br> `/api/get-expense`  | Get all transactions | ✅ Yes |
-| `PUT`    | `/api/edit-income/:_id` <br> `/api/edit-expense/:_id` | Update a transaction | ✅ Yes |
-| `DELETE` | `/api/delete-income/:_id` <br> `/api/delete-expense/:_id` | Delete a transaction | ✅ Yes |
+| `POST`   | `/api/signup` <br> `/api/login` <br> `/api/add-income` <br> `/api/add-expense`  | Add a new account <br> Login to new account <br> Add a new transactions  | ✅ Yes |
+| `GET`    | `/api/user` <br> `/api/get-income` <br> `/api/get-expense`  | Get user and transactions | ✅ Yes |
+| `PUT`    | `/api/edit-income/:_id` <br> `/api/edit-expense/:_id` | Update a transaction by id | ✅ Yes |
+| `DELETE` | `/api/delete-income/:_id` <br> `/api/delete-expense/:_id` | Delete a transaction by id | ✅ Yes |
 
 🔒 **All endpoints require authentication via session-based login with Passport.js.** Unauthorized requests will be rejected.
 
@@ -151,10 +149,9 @@ npm start
 
 ## 🎯 **Future Enhancements**
 
-- 🔹 Advanced filtering (by category, amount, tags)
-- 🔹 Multi-user budgeting feature
-- 🔹 Export transactions to CSV/PDF
-- 🔹 Active status on transaction list
+🔹 Advanced filtering (by category, amount, tags)
+🔹 Export transactions to CSV/PDF
+🔹 Active status on transaction list
 
 ---
 
