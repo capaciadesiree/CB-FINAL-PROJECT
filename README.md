@@ -58,7 +58,7 @@ A **full-stack finance tracker** that helps users manage their income and expens
 
 ```
 git clone https://github.com/capaciadesiree/CB-FINAL-PROJECT.git
-cd finance-tracker
+cd CB-FINAL-PROJECT
 ```
 
 ### **2️⃣ Install Dependencies**
