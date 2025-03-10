@@ -8,7 +8,7 @@ A **full-stack finance tracker** that helps users manage their income and expens
 
 ✅ Add, edit, and delete transactions in real-time
 
-✅ Image with **charts,** **transaction history** and **total summary boxes**
+✅ Dashboard with **charts,** **transaction history** and **total summary boxes**
 
 ✅ **Automated calculations** for total income, total expenses, and remaining savings
 
