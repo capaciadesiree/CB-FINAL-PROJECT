@@ -4,7 +4,7 @@ A **finance tracker web application** designed to help users efficiently manage 
 
 Developed to explore user authentication, API integrations, full-stack app deployment, session management, and a dynamic system for data calculations. This project is a challenging and creative way that helped me deepen my understanding of both backend and frontend development.
 
-https://github.com/user-attachments/assets 47d4500e-93e6-4b64-b72a-4d35f6c7917b
+https://github.com/user-attachments/assets/f8d57f1d-ea2e-4164-a52e-447e6d3b56b5
 
 ---
 
