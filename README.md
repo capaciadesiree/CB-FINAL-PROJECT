@@ -1,6 +1,12 @@
 # 📌 Mondit - Finance Tracker App
 
-A **full-stack finance tracker** that helps users manage their income and expenses efficiently. Built with **MERN Stack** and **Passport.js** for authentication.
+A **finance tracker web application** designed to help users efficiently manage their income and expenses.
+
+Developed to explore user authentication, API integrations, full-stack app deployment, session management, and a dynamic system for data calculations. This project is a challenging and creative way that helped me deepen my understanding of both backend and frontend development.
+
+https://github.com/user-attachments/assets 47d4500e-93e6-4b64-b72a-4d35f6c7917b
+
+---
 
 ## 🚀 **Features**
 
@@ -18,50 +24,30 @@ A **full-stack finance tracker** that helps users manage their income and expens
 
 ✅ **Light / Dark mode** interface
 
+---
+
 ## 🛠 **Tech Stack**
 
-| **Category** | **Technology** |
-| --- | --- |
-| Frontend | React, Styled-Components, MUI |
-| Backend | Node.js, Express.js |
-| Database | MongoDB, Mongoose |
-| Authentication | Passport.js (Session-based) |
-| Hosting | Netlify (Frontend), Railway (Backend) |
-
-## 📷 **Screenshots**
-
-### 1️⃣ Sign-up & Login page
-
-![Image Preview](https://i.imgur.com/6Rt1HxG.png)
-
-![Image Preview](https://imgur.com/byuwA8Y.png)
-
-### 2️⃣ Dashboard
-
-![Image Preview](https://imgur.com/NoeVuQC.png)
-
-### 3️⃣ Add Transaction
-
-![Image Preview](https://imgur.com/95AjpBb.png)
-
-![Image Preview](https://imgur.com/Oa0xltj.png)
-
-### 4️⃣ Transaction History
-
-![Image Preview](https://imgur.com/MmEKXIy.png)
+- **Database:** MongoDB + Mongoose for flexible database management
+- **Backend:** Node.js & Express for handling RESTful APIs and server-side logic
+- **Frontend:** React for a dynamic, component-based UI
+- **Authentication:** Passport.js for secure, session-based login
+- **Styling:** Styled-Components & MUI for UI design
+- **Testing:** Postman for API testing (GET, POST, PUT, DELETE requests)
+- **Deployment:** Netlify for the frontend, Railway for the backend
 
 ---
 
 ## 📥 **Installation & Setup**
 
-### **1️⃣ Clone the Repository**
+### **1. Clone the Repository**
 
 ```
 git clone https://github.com/capaciadesiree/CB-FINAL-PROJECT.git
 cd CB-FINAL-PROJECT
 ```
 
-### **2️⃣ Install Dependencies**
+### **2. Install Dependencies**
 
 ### Backend:
 
@@ -77,7 +63,7 @@ cd frontend
 npm install
 ```
 
-### **3️⃣ Set Up Environment Variables**
+### **3. Set Up Environment Variables**
 
 Create a `.env` file in the **backend** directory and add:
 
@@ -102,7 +88,7 @@ Create a `.env` file in the **frontend** directory and add:
 REACT_APP_API_URL=your_backend_api_url
 ```
 
-### **4️⃣ Start the App**
+### **4. Start the App**
 
 Run the backend:
 
@@ -122,13 +108,10 @@ npm start
 
 ## 🔥 **Usage**
 
-1️⃣ Register/Login to your account
-
-2️⃣ Add **income** or **expense** transactions
-
-3️⃣ View summary in the **dashboard**
-
-4️⃣ Edit or delete transactions in **TxnList** (Transaction List) component
+1. Register/Login to an account
+2. Add **income** or **expense** transactions
+3. Edit or delete transactions in your **Transaction List**
+4. View summary of your finances in the **dashboard** and/or **Transaction History** page
 
 ---
 
