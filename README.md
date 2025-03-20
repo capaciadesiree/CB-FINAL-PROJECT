@@ -73,9 +73,9 @@ https://github.com/user-attachments/assets/f8d57f1d-ea2e-4164-a52e-447e6d3b56b5
 
 ## 🎯 **Future Enhancements**
 
-- Advanced filtering (by category, amount, tags)
-- Export transactions to CSV/PDF
-- Active status on transaction list
+- Implement advanced filtering by category, amount, and tags
+- Add active status indicators to the transaction list
+- Refactor code and resolve existing bugs
 
 ---
 
