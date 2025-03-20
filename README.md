@@ -26,6 +26,15 @@ https://github.com/user-attachments/assets/f8d57f1d-ea2e-4164-a52e-447e6d3b56b5
 
 ---
 
+## 🔥 **Usage**
+
+1. Register/Login to an account
+2. Add **income** or **expense** transactions
+3. Edit or delete transactions in your **Transaction List**
+4. View summary of your finances in the **dashboard** and/or **Transaction History** page
+
+---
+
 ## 🛠 **Tech Stack**
 
 - **Database:** MongoDB + Mongoose for flexible database management
@@ -38,80 +47,12 @@ https://github.com/user-attachments/assets/f8d57f1d-ea2e-4164-a52e-447e6d3b56b5
 
 ---
 
-## 📥 **Installation & Setup**
+### **💡What I Learned**
 
-### **1. Clone the Repository**
-
-```
-git clone https://github.com/capaciadesiree/CB-FINAL-PROJECT.git
-cd CB-FINAL-PROJECT
-```
-
-### **2. Install Dependencies**
-
-### Backend:
-
-```
-cd backend
-npm install
-```
-
-### Frontend:
-
-```
-cd frontend
-npm install
-```
-
-### **3. Set Up Environment Variables**
-
-Create a `.env` file in the **backend** directory and add:
-
-```
-# Server Port
-PORT=3000
-
-# Database Connection
-MONGO_URI=your_mongodb_connection_string
-
-# Session Authentication
-SESSION_SECRET=your_secret_key
-
-# Manually change NODE_ENV to development or production
-NODE_ENV=production
-```
-
-Create a `.env` file in the **frontend** directory and add:
-
-```
-# API Base URL for Backend
-REACT_APP_API_URL=your_backend_api_url
-```
-
-### **4. Start the App**
-
-Run the backend:
-
-```
-cd backend
-npm run dev
-```
-
-Run the frontend:
-
-```
-cd frontend
-npm start
-```
-
----
-
-## 🔥 **Usage**
-
-1. Register/Login to an account
-2. Add **income** or **expense** transactions
-3. Edit or delete transactions in your **Transaction List**
-4. View summary of your finances in the **dashboard** and/or **Transaction History** page
+- **Backend & Database:** How to **set up a secure server**, connect MongoDB using **Mongoose**, and handle authentication properly with **Passport.js**.
+- **Frontend Development:** Improved my **React component structure**, API data handling with **Axios**, and UI styling using **Styled-Components & MUI**.
+- **Full-Stack Workflow:** How **frontend and backend communicate**, best practices for **REST API design**, and the importance of **data validation** before storing information.
+- **Debugging & Optimization:** The importance of **writing clean, modular code**, testing APIs with **Postman**, and optimizing the UI for **better performance**.
 
 ---
 
