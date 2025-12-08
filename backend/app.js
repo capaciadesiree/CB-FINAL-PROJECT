@@ -82,7 +82,7 @@ app.use((err, req, res, next) => {
 
 // Initialize server and connect to database
 const PORT = process.env.PORT || 4000;
-console.log("Railway Assigned PORT:", process.env.PORT);
+console.log("Service Assigned PORT:", process.env.PORT);
 
 const server = () => {
   db();
