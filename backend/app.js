@@ -31,7 +31,7 @@ const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URL,
+    mongoUrl: process.env.MONGO_URI,
     ttl: 24 * 60 * 60, // 24 hours
     autoRemove: 'native',
     crypto: {
