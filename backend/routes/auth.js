@@ -1,8 +1,33 @@
 const router = require('express').Router();
+const passport = require('passport'); 
 const { check, body } = require('express-validator');
 const authController = require('../controllers/authController');
 const { isAuthenticated } = require('../middlewares/auth');
 
+// Google OAuth
+const CLIENT_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://mondit.netlify.app' 
+  : 'http://localhost:3000';
+
+// trigger route
+router.get('/auth/google', 
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// callback route
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { 
+    failureRedirect: `${CLIENT_URL}/login` 
+  }),
+  (req, res) => {
+    req.session.save(() => {
+      // Redirect to the dynamic URL
+      res.redirect(`${CLIENT_URL}/dashboard`); 
+    });
+  }
+);
+
+// Manual
 router.get('/signup', authController.getSignup)
     .post('/signup', [
       check('first_name')

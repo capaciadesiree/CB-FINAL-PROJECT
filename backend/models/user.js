@@ -4,23 +4,24 @@ const UserSchema = new mongoose.Schema({
     first_name: {
       type: String,
       required: true,
-      maxLength: 20
+      maxLength: 50
     },
     last_name: {
       type: String,
       required: true,
-      maxLength: 20
+      maxLength: 50
     },
     email: {
       type: String,
       required: true,
       unique: true,
-      maxLength: 20
     },
     password: {
       type: String,
-      required: true
-    }
+      // required: true
+    },
+    googleId: { type: String },
+
   }, {timestamps: true});
 
 module.exports = mongoose.model('User', UserSchema);

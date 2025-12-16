@@ -40,8 +40,8 @@ const sessionMiddleware = session({
   }),
   cookie: {
     httpOnly: true,
-    secure: true,
-    sameSite: 'None',
+    secure: process.env.NODE_ENV === 'production', // Set to true only in production
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Adjust sameSite for local
     maxAge: 24 * 60 * 60 * 1000
   },
   rolling: true,
