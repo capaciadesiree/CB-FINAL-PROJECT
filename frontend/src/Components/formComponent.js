@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import GoogleAuthButton from './GoogleAuthButton';
+
 // import { isEmail } from 'validator';
 
 const FormGroup = styled.div`
@@ -45,7 +47,35 @@ const InlineFormGroup = styled.div`
   }
 `;
 
+// New Divider Style
+const Divider = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #ffffff; // White text to match your dark background
+  font-size: 0.85em;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  &::before {
+    margin-right: .5em;
+  }
+
+  &::after {
+    margin-left: .5em;
+  }
+`;
+
 const FormComponent = ({ isSignup }) => {
+  // Set this to FALSE to hide manual login/signup inputs temporarily
+  const showManualAuth = false; 
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -168,75 +198,86 @@ const FormComponent = ({ isSignup }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {/* Display form-level errors */}
-      {errors.form && <Error>{errors.form}</Error>}
-      {isSignup && (
-        <InlineFormGroup>
-          <FormGroup>
-            <Input 
-              type="text" 
-              id="first_name" 
-              name="first_name" 
-              placeholder='First Name'
-              value={formData.first_name} 
-              onChange={handleChange} />
-            {errors.first_name && <Error>{errors.first_name}</Error>}
-          </FormGroup>
-          <FormGroup>
-            <Input 
-              type='text' 
-              id='last_name' 
-              name='last_name' 
-              placeholder='Last Name'
-              value={formData.last_name} 
-              onChange={handleChange} />
-            {errors.last_name && <Error>{errors.last_name}</Error>}
-          </FormGroup>
-        </InlineFormGroup>
+    <div>
+      {/* 1. Google Button is always visible */}
+      <GoogleAuthButton isSignup={isSignup} />
+
+      {/* 2. Only show manual form if enabled */}
+      {showManualAuth && (
+        <>
+          <Divider>OR</Divider>
+          
+          <form onSubmit={handleSubmit}>
+            {errors.form && <Error>{errors.form}</Error>}
+            
+            {isSignup && (
+              <InlineFormGroup>
+                <FormGroup>
+                  <Input 
+                    type="text" 
+                    name="first_name" 
+                    placeholder='First Name'
+                    value={formData.first_name} 
+                    onChange={handleChange} />
+                  {errors.first_name && <Error>{errors.first_name}</Error>}
+                </FormGroup>
+                <FormGroup>
+                  <Input 
+                    type='text' 
+                    name='last_name' 
+                    placeholder='Last Name'
+                    value={formData.last_name} 
+                    onChange={handleChange} />
+                  {errors.last_name && <Error>{errors.last_name}</Error>}
+                </FormGroup>
+              </InlineFormGroup>
+            )}
+
+            <FormGroup>
+              <Input 
+                type='email' 
+                name='email' 
+                placeholder='Email'
+                value={formData.email} 
+                onChange={handleChange} />
+              {errors.email && <Error>{errors.email}</Error>}
+            </FormGroup>
+
+            <FormGroup>
+              <Input 
+                type='password' 
+                name='password' 
+                placeholder='Enter your Password'
+                value={formData.password} 
+                onChange={handleChange} />
+              {Array.isArray(errors.password) && (
+                <Error>
+                  <ul>
+                    {errors.password.map((error, index) => (
+                      <li key={index}>{error}</li>
+                    ))}
+                  </ul>
+                </Error> 
+              )}
+            </FormGroup>
+
+            {isSignup && (
+              <FormGroup>
+                <Input 
+                  type='password' 
+                  name='confirmPassword' 
+                  placeholder='Confirm Password'
+                  value={formData.confirmPassword} 
+                  onChange={handleChange} />
+                {errors.confirmPassword && <Error>{errors.confirmPassword}</Error>}
+              </FormGroup>
+            )}
+
+            <Button type="submit">{isSignup ? 'Sign Up' : 'Log In'}</Button>
+          </form>
+        </>
       )}
-      <FormGroup>
-        <Input 
-          type='email' 
-          id='email' 
-          name='email' 
-          placeholder='Email'
-          value={formData.email} 
-          onChange={handleChange} />
-        {errors.email && <Error>{errors.email}</Error>}
-      </FormGroup>
-      <FormGroup>
-        <Input 
-          type='password' 
-          id='password' 
-          name='password' 
-          placeholder='Enter your Password'
-          value={formData.password} 
-          onChange={handleChange} />
-        {Array.isArray(errors.password) && (
-          <Error>
-            <ul>
-              {errors.password.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          </Error> 
-        )}
-      </FormGroup>
-      {isSignup && (
-        <FormGroup>
-          <Input 
-            type='password' 
-            id='confirmPassword' 
-            name='confirmPassword' 
-            placeholder='Confirm Password'
-            value={formData.confirmPassword} 
-            onChange={handleChange} />
-          {errors.confirmPassword && <Error>{errors.confirmPassword}</Error>}
-        </FormGroup>
-      )}
-      <Button type="submit">{isSignup ? 'Sign Up' : 'Log In'}</Button>
-    </form>
+    </div>
   );
 };
 
