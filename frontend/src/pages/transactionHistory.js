@@ -8,62 +8,58 @@ import Chart from '../Components/chart';
 
 const TxnHistoryContainer = styled.div`
   display: grid;
-  // grid-template-columns: 1fr 3fr 1fr;
-  // grid-template-rows: auto 1fr auto;
-  grid-template-columns: 250px 760px;
-  grid-template-rows: 80px 300px 305px;
-  // height: 97vh;
+  grid-template-columns: 250px minmax(0, 1fr);
+  grid-template-rows: auto 40% minmax(0, 1fr);
+  height: 100vh;
   gap: 10px;
   padding: 10px;
   background-color: ${({ theme }) => theme.dashboardBackground};
   color: ${({ theme }) => theme.textColor};
-  overflow: hidden;
+  box-sizing: border-box;
 `;
 
 const SidebarWrapper = styled.div`
-  grid-column: 1/2;
-  grid-row: 1/4;
-  padding: 20px;
-  height: 92vh;
+  grid-column: 1 / 2;
+  grid-row: 1 / 4;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
 `;
 
 const HeaderWrapper = styled.div`
-  grid-column: 2/4;
-  grid-row: 1/2;
-  padding: 20px;
-  height: 40px;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  height: 80px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
+  padding: 0 20px;
+  min-width: 0;
 `;
 
 const ChartWrapper = styled.div`
-  grid-column: 2/2;
-  grid-row: 2/3;
-  width: 123%;
-  // height: 36vh;
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
+  min-height: 0;
+  min-width: 0;
 `;
 
 const TxnWrapper = styled.div`
-  grid-column: 2/2;
-  grid-row: 3/4;
-  width: 123%;
-  height: 42vh;
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
   padding: 20px;
   border-radius: 10px;
-  overflow-y: auto; // Add vertical scroll if content overflows
+  overflow-y: auto;
+  overflow-x: auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
+  min-width: 0;
 `;
 
 const TransactionHistory = () => {

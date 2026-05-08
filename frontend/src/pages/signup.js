@@ -103,7 +103,7 @@ const Signup = () => {
 
       <RightColumn>
         <Copyright>
-          <p>&#169; 2024 All rights reserved. Designed and Developed by <a href="https://www.desireecapacia.com" target="_blank" rel="noopener noreferrer">Desiree Capacia</a>.</p>
+          <p>&#169; {new Date().getFullYear()} All rights reserved. Designed and Developed by <a href="https://www.desireecapacia.com" target="_blank" rel="noopener noreferrer">Desiree Capacia</a>.</p>
         </Copyright>
       </RightColumn>
     </PageContainer>

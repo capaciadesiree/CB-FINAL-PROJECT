@@ -93,7 +93,7 @@ const Login = () => {
       
       <RightColumn>
         <Copyright>
-          <p>&#169; 2024 All rights reserved. Designed and Developed by Desiree Capacia.</p>
+          <p>&#169; {new Date().getFullYear()} All rights reserved. Designed and Developed by Desiree Capacia.</p>
         </Copyright>
       </RightColumn>
     </PageContainer>

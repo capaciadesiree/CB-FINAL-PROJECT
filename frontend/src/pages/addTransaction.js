@@ -8,70 +8,70 @@ import SummaryBox from '../Components/summaryBox';
 
 const AddTxnContainer = styled.div`
   display: grid;
-  // grid-template-columns: 1fr 3fr 1fr;
-  // grid-template-rows: auto 1fr auto;
-  grid-template-columns: 250px 670px 180px 0px;
-  grid-template-rows: 80px 300px 210px 0px;
-  height: 96vh;
+  grid-template-columns: 250px minmax(0, 1fr); 
+  grid-template-rows: auto auto minmax(0, 1fr) auto; 
+  height: 100vh;
   gap: 10px;
   padding: 10px;
   background-color: ${({ theme }) => theme.dashboardBackground};
   color: ${({ theme }) => theme.textColor};
+  box-sizing: border-box;
 `;
 
 const SidebarWrapper = styled.div`
-  grid-column: 1/2;
-  grid-row: 1/4;
-  padding: 20px;
-  height: 92vh;
+  grid-column: 1 / 2;
+  grid-row: 1 / 5;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
 `;
 
 const HeaderWrapper = styled.div`
-  grid-column: 2/6;
-  grid-row: 1/2;
-  padding: 20px;
-  height: 40px;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  height: 80px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
+  padding: 0 20px;
+  min-width: 0;
 `;
 
 const TxnFormWrapper = styled.div`
-  grid-column: 2/6;
-  grid-row: 2/3;
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
   display: flex;
-  height: 300px;
-  // width: 76vw;
-  gap: 10px;
-  // justify-content: space-between;
-  align-items: flex-start;
+  gap: 20px;
+  min-width: 0;
+  // Make forms take 50% width each
+  & > * {
+    flex: 1;
+    min-width: 0;
+  }
 `;
 
 const TxnListWrapper = styled.div`
-  grid-column: 2/6;
-  grid-row: 3/4;
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
   display: flex;
-  // width: 76vw;
-  // height: 340px;
-  margin-top: 5px;
-  // justify-content: space-between;
-  gap: 10px;
-  align-items: flex-start;
+  gap: 20px;
+  min-height: 0; // Allows scrolling inside lists
+  min-width: 0;
+  // Make lists take 50% width each
+  & > * {
+    flex: 1;
+    height: 100%; // Force lists to fill height
+    min-width: 0;
+  }
 `;
 
 const SummaryWrapper = styled.div`
-  grid-column: 2/6;
-  grid-row: 4/4;
-  margin-top: 5px;
+  grid-column: 2 / 3;
+  grid-row: 4 / 5;
   display: flex;
-  // width: 76vw;
-  justify-content: space-between;
+  min-width: 0;
 `;
 
 

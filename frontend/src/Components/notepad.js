@@ -2,21 +2,29 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const NotepadContainer = styled.div`
-  padding: 20px;
-  // background-color: ${({ theme }) => theme.containerBackground};
-  // width: 100%;
-  // max-width: 600px;
-  margin: 0 auto;
+  height: 100%; // Fill wrapper
+  display: flex;
+  flex-direction: column;
+`;
+
+const Title = styled.h2`
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: ${({ theme }) => theme.textColor};
 `;
 
 const TextArea = styled.textarea`
-  width: 120px;
-  height: 70px;
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
   padding: 10px;
   font-size: 16px;
   border: none;
   background-color: transparent;
   color: ${({ theme }) => theme.textColor};
+  resize: none; // Disable manual resize handle
+  box-sizing: border-box;
 `;
 
 const Notepad = ({ theme }) => {
@@ -24,7 +32,7 @@ const Notepad = ({ theme }) => {
 
   return (
     <NotepadContainer theme={theme}>
-      <h2>Notepad</h2>
+      <Title>Notepad</Title>
       <TextArea
         value={note}
         onChange={(e) => setNote(e.target.value)}

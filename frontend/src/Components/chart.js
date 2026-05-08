@@ -68,9 +68,9 @@ const TimeRangeSelect = styled.select`
 
 const ChartContainer = styled.div`
   width: 100%;
-  height: 90%;
-  max-width:800px;
+  height: 100%;
   margin: 0 auto;
+  position: relative;
 `;
 
 const EmptyState = styled.div`

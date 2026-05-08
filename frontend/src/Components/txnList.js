@@ -12,8 +12,7 @@ import { eventBus } from '../utils/eventBus';
 const TxnContainer = styled.div`
   display: flex;
   width: 100%;
-  max-width: 600px;
-  height: 170px;
+  height: 100%;
   padding: 20px;
   flex-direction: column;
   gap: 10px;
@@ -22,6 +21,8 @@ const TxnContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.componentBackground};
+  box-sizing: border-box; 
+  min-height: 0; 
 `;
 
 const TransactionItem = styled.div`
